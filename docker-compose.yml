@@ -1,12 +1,5 @@
 version: '2'
 services:
-  php:
-    build: docker/php
-    working_dir: /var/qu/
-    volumes:
-      - ./:/var/qu/
-    ports:
-      - 46877
   sqs:
     image: vsouza/sqs-local
     volumes:
