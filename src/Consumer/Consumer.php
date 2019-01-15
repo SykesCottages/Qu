@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace SykesCottages\Qu\Consumer;
 
 use SykesCottages\Qu\Connector\Queue;
+use SykesCottages\Qu\Exception\ExitRequestedException;
 use SykesCottages\Qu\Message\Contract\Message;
 
 abstract class Consumer
@@ -38,7 +39,7 @@ abstract class Consumer
     public function idle(): void
     {
         if ($this->exitRequested) {
-            exit;
+            throw new ExitRequestedException($this->queue->getQueueName());
         }
     }
 

@@ -27,6 +27,11 @@ final class Queue implements Consumable, MessageHandler
         $this->queue = $queue;
     }
 
+    public function getQueueName(): string
+    {
+        return $this->name;
+    }
+
     public function queueMessage(array $body): void
     {
         $this->queue->queueMessage($this->name, $body);

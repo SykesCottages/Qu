@@ -30,7 +30,6 @@
         <env name="RABBIT_MQ_USER" value="admin"/>
         <env name="RABBIT_MQ_PASSWORD" value="admin"/>
 
-        <env name="SQS_PORT" value="41662"/>
-        <env name="SQS_HOST" value="localhost"/>
+        <env name="SQS_ENDPOINT" value="http://localhost:41662"/>
     </php>
 </phpunit>
