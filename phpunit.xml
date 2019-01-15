@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutChangesToGlobalState="true"
+>
+    <testsuites>
+        <testsuite name="All">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+
+        <env name="RABBIT_MQ_PORT" value="48888"/>
+        <env name="RABBIT_MQ_HOST" value="localhost"/>
+        <env name="RABBIT_MQ_USER" value="admin"/>
+        <env name="RABBIT_MQ_PASSWORD" value="admin"/>
+
+        <env name="SQS_PORT" value="41662"/>
+        <env name="SQS_HOST" value="localhost"/>
+    </php>
+</phpunit>

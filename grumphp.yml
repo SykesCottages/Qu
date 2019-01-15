@@ -1,0 +1,46 @@
+parameters:
+    git_dir: .
+    bin_dir: vendor/bin
+    ascii:
+        failed: ~
+        succeeded: ~
+    hide_circumvention_tip: true
+    tasks:
+        composer: ~
+        phpcs:
+            standard: 'PSR2'
+            tab_width: ~
+            whitelist_patterns:
+                - /^src/
+            encoding: ~
+            ignore_patterns:
+                - /^vendor/
+            sniffs: []
+            triggered_by: [php]
+        phplint: ~
+        phpmnd:
+            directory: ./src
+            whitelist_patterns: []
+            exclude: []
+            exclude_name: []
+            exclude_path: []
+            extensions:
+                - all
+            hint: false
+            ignore_numbers: []
+            ignore_strings: []
+            strings: false
+            triggered_by: [php]
+        phpparser:
+            ignore_patterns: []
+            kind: php7
+            visitors:
+                declare_strict_types: ~
+                never_use_else: ~
+            triggered_by: [php]
+        phpunit:
+            config_file: ./phpunit.xml
+            testsuite: ~
+            group: []
+            always_execute: true
+        securitychecker: ~

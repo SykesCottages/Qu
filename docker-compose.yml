@@ -1,0 +1,20 @@
+version: '2'
+services:
+  php:
+    build: docker/php
+    working_dir: /var/qu/
+    volumes:
+      - ./:/var/qu/
+    ports:
+      - 46877
+  sqs:
+    image: vsouza/sqs-local
+    volumes:
+      - ./docker/sqs/config/custom.conf:/custom.conf
+    ports:
+      - 41662:9324
+  rabbitmq:
+    build: ./docker/rabbitmq
+    ports:
+      - 29852:15672
+      - 48888:5672
