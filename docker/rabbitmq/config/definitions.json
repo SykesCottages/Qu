@@ -44,11 +44,27 @@
       "auto_delete": false,
       "internal": false,
       "arguments": {}
+    },
+    {
+      "name": "dead_letter",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     }
   ],
   "queues": [
     {
       "name": "test",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "dead_letter",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -60,6 +76,14 @@
       "source": "test",
       "vhost": "/",
       "destination": "test",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "dead_letter",
+      "vhost": "/",
+      "destination": "dead_letter",
       "destination_type": "queue",
       "routing_key": "",
       "arguments": {}

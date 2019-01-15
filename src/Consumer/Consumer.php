@@ -9,7 +9,13 @@ use SykesCottages\Qu\Message\Contract\Message;
 
 abstract class Consumer
 {
+    /**
+     * @var bool
+     */
     protected $exitRequested;
+    /**
+     * @var Queue
+     */
     protected $queue;
 
     public function __construct(Queue $queue)

@@ -10,6 +10,9 @@ use SykesCottages\Qu\Message\Contract\Message;
 
 class RabbitMQMessage implements Message
 {
+    /**
+     * @var AMQPMessage
+     */
     private $message;
 
     public function __construct(AMQPMessage $message)

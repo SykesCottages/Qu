@@ -12,7 +12,7 @@ use SykesCottages\Qu\Message\SQSMessage;
 
 final class SQS extends SqsClient implements QueueInterface
 {
-    const LONG_POLL_TIME = 20;
+    private const LONG_POLL_TIME = 20;
 
     public function queueMessage(string $queue, array $message): void
     {

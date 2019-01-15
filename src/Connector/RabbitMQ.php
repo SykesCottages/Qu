@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace SykesCottages\Qu\Connector;
 
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use SykesCottages\Qu\Connector\Contract\QueueInterface;
@@ -21,7 +22,13 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     private const PREFETCH_COUNT = 1;
 
+    /**
+     * @var string
+     */
     private $deadLetterQueue;
+    /**
+     * @var AMQPChannel
+     */
     private $channel;
 
     public function __construct(

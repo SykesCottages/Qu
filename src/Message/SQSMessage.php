@@ -8,6 +8,9 @@ use SykesCottages\Qu\Message\Contract\Message;
 
 class SQSMessage implements Message
 {
+    /**
+     * @var array
+     */
     private $message;
 
     public function __construct(array $message)

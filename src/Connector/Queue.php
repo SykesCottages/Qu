@@ -11,8 +11,14 @@ use SykesCottages\Qu\Message\Contract\MessageHandler;
 
 final class Queue implements Consumable, MessageHandler
 {
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var QueueInterface
+     */
     private $queue;
 
     public function __construct(string $name, QueueInterface $queue)
