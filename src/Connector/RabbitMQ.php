@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SykesCottages\Qu\Connector;
 
@@ -23,10 +23,6 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
     private const PREFETCH_COUNT = 1;
 
     /**
-     * @var string
-     */
-    private $deadLetterQueue;
-    /**
      * @var AMQPChannel
      */
     private $channel;
@@ -35,13 +31,11 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         string $host,
         int $port,
         string $user = 'guest',
-        string $pass = 'guest',
-        string $deadLetterQueue = 'dead_letter'
+        string $pass = 'guest'
     ) {
         parent::__construct($host, $port, $user, $pass);
 
         $this->channel = $this->channel();
-        $this->deadLetterQueue = $deadLetterQueue;
     }
 
     public function queueMessage(string $queue, array $message): void
@@ -79,32 +73,28 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     public function acknowledge(string $queue, Message $message): void
     {
-        if (!$message instanceof RabbitMqMessage) {
-            throw new InvalidMessageTypeException(RabbitMQMessage::class);
-        }
+        $this->isMessageInTheCorrectFormat($message);
 
-        $message->getDeliveryInfoChannel()->basic_ack($message->getDeliveryTag());
+        $message
+            ->getDeliveryInfoChannel()
+            ->basic_ack($message->getDeliveryTag());
     }
 
     public function reject(string $queue, Message $message, string $errorMessage = ''): void
+    {
+        $this->isMessageInTheCorrectFormat($message);
+
+        $message
+            ->getDeliveryInfoChannel()
+            ->basic_nack($message->getDeliveryTag());
+    }
+
+    private function isMessageInTheCorrectFormat(Message $message)
     {
         if (!$message instanceof RabbitMqMessage) {
             throw new InvalidMessageTypeException(RabbitMQMessage::class);
         }
 
-        $deadLetterMessage = [
-            'queue' => $queue,
-            'body' => $message->getBody(),
-            'error' => $errorMessage,
-        ];
-
-        $messageChannel = $message->getDeliveryInfoChannel();
-
-        $messageChannel->basic_publish(
-            new AMQPMessage(json_encode($deadLetterMessage)),
-            $this->deadLetterQueue
-        );
-
-        $messageChannel->basic_nack($message->getDeliveryTag());
+        return true;
     }
 }

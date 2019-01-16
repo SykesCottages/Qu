@@ -61,7 +61,9 @@
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
-      "arguments": {}
+      "arguments": {
+        "x-dead-letter-exchange": "dead_letter"
+      }
     },
     {
       "name": "dead_letter",

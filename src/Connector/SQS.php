@@ -14,8 +14,6 @@ final class SQS extends SqsClient implements QueueInterface
 {
     private const LONG_POLL_TIME = 20;
 
-    private const DEAD_LETTER_SUFFIX = '-deadletter';
-
     public function queueMessage(string $queue, array $message): void
     {
         $this->sendMessage([
@@ -48,9 +46,7 @@ final class SQS extends SqsClient implements QueueInterface
 
     public function acknowledge(string $queue, Message $message): void
     {
-        if (!$message instanceof SQSMessage) {
-            throw new InvalidMessageTypeException(SQSMessage::class);
-        }
+        $this->isMessageInTheCorrectFormat($message);
 
         $this->deleteMessage([
             'QueueUrl' => $queue,
@@ -60,19 +56,12 @@ final class SQS extends SqsClient implements QueueInterface
 
     public function reject(string $queue, Message $message, string $errorMessage = ''): void
     {
-        if (!$message instanceof SQSMessage) {
-            throw new InvalidMessageTypeException(SQSMessage::class);
-        }
+        $this->isMessageInTheCorrectFormat($message);
 
-        $this->queueMessage($queue . self::DEAD_LETTER_SUFFIX, [
-            'queue' => $queue,
-            'body' => json_encode($message->getBody()),
-            'error' => $errorMessage
-        ]);
-
-        $this->deleteMessage([
+        $this->changeMessageVisibility([
             'QueueUrl' => $queue,
-            'ReceiptHandle' => $message->getReceiptHandle()
+            'ReceiptHandle' => $message->getReceiptHandle(),
+            'VisibilityTimeout' => 0
         ]);
     }
 
@@ -86,5 +75,14 @@ final class SQS extends SqsClient implements QueueInterface
             ];
         }
         return $messageAttributes;
+    }
+
+    private function isMessageInTheCorrectFormat(Message $message)
+    {
+        if (!$message instanceof SQSMessage) {
+            throw new InvalidMessageTypeException(SQSMessage::class);
+        }
+
+        return true;
     }
 }
