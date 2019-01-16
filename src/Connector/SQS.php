@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SykesCottages\Qu\Connector;
 
@@ -14,6 +14,8 @@ final class SQS extends SqsClient implements QueueInterface
 {
     private const LONG_POLL_TIME = 20;
 
+    private const DEAD_LETTER_SUFFIX = '-deadletter';
+
     public function queueMessage(string $queue, array $message): void
     {
         $this->sendMessage([
@@ -25,7 +27,7 @@ final class SQS extends SqsClient implements QueueInterface
 
     public function consume(string $queue, callable $callback, callable $idleCallback): void
     {
-        while (true) {
+        do {
             $message = $this->receiveMessage([
                 'QueueUrl' => $queue,
                 'WaitTimeSeconds' => self::LONG_POLL_TIME,
@@ -41,7 +43,7 @@ final class SQS extends SqsClient implements QueueInterface
             foreach ($messages as $message) {
                 $callback(new SQSMessage($message));
             }
-        }
+        } while (true);
     }
 
     public function acknowledge(string $queue, Message $message): void
@@ -62,10 +64,15 @@ final class SQS extends SqsClient implements QueueInterface
             throw new InvalidMessageTypeException(SQSMessage::class);
         }
 
-        $this->changeMessageVisibility([
+        $this->queueMessage($queue . self::DEAD_LETTER_SUFFIX, [
+            'queue' => $queue,
+            'body' => json_encode($message->getBody()),
+            'error' => $errorMessage
+        ]);
+
+        $this->deleteMessage([
             'QueueUrl' => $queue,
-            'ReceiptHandle' => $message->getReceiptHandle(),
-            'VisibilityTimeout' => 0
+            'ReceiptHandle' => $message->getReceiptHandle()
         ]);
     }
 
