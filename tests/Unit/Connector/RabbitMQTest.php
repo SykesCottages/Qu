@@ -6,12 +6,13 @@ namespace Tests\Unit\Connector;
 
 use Mockery;
 use Mockery\Mock;
+use SykesCottages\Qu\Connector\RabbitMQ;
 use SykesCottages\Qu\Connector\SQS;
 use SykesCottages\Qu\Exception\InvalidMessageTypeException;
 use SykesCottages\Qu\Message\Contract\Message;
 use Tests\Unit\UnitTestCase;
 
-class SQSTest extends UnitTestCase
+class RabbitMQTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
@@ -20,20 +21,20 @@ class SQSTest extends UnitTestCase
      */
     private $genericMessage;
     /**
-     * @var SQS
+     * @var RabbitMQ
      */
-    private $sqs;
+    private $rabbitMQ;
 
     public function setUp(): void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
-        $this->sqs = new SQS([
-            'service' => 'sqs',
-            'region' => 'elasticmq',
-            'version' => '2012-11-05',
-            'exception_class' => 'Aws\Exception\AwsException'
-        ]);
+        $this->rabbitMQ = new RabbitMQ(
+            getenv('RABBIT_MQ_HOST'),
+            (int)getenv('RABBIT_MQ_PORT'),
+            getenv('RABBIT_MQ_USER'),
+            getenv('RABBIT_MQ_PASSWORD')
+        );
     }
 
     /**
@@ -44,9 +45,9 @@ class SQSTest extends UnitTestCase
     {
         $this->expectException(InvalidMessageTypeException::class);
 
-        $this->expectExceptionMessage('Message is not the correct type: SykesCottages\Qu\Message\SQSMessage');
+        $this->expectExceptionMessage('Message is not the correct type: SykesCottages\Qu\Message\RabbitMQMessage');
 
-        $this->sqs->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
+        $this->rabbitMQ->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
     }
 
     public function functionDataProvider(): array
