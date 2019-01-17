@@ -21,7 +21,7 @@ We've bundled the queues in docker so you should be able to run examples locally
 ### RabbitMQ
 
 #### Links
-*This links are only available when the docker container is running*
+*These links are only available when the docker container is running*
 
 | Name | Link |
 |---|---|
@@ -39,7 +39,7 @@ We've bundled the queues in docker so you should be able to run examples locally
 ### SQS
 
 #### Links
-*This links are only available when the docker container is running*
+*These links are only available when the docker container is running*
 
 | Name | Link |
 |---|---|
