@@ -14,7 +14,7 @@ use SykesCottages\Qu\Message\RabbitMQMessage;
 
 final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 {
-    private const CONSUMER_TAG = '.consumer.tag';
+    private const CONSUMER_TAG = 'default.consumer.tag';
 
     private const DEFAULT_PREFETCH_SIZE = null;
 
@@ -32,7 +32,8 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
     private $queueOptions = [
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
-        'prefetchCount' => self::PREFETCH_COUNT
+        'prefetchCount' => self::PREFETCH_COUNT,
+        'consumerTag' => self::CONSUMER_TAG
     ];
 
     public function queueMessage(string $queue, array $message): void
@@ -57,7 +58,7 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
         $this->channel->basic_consume(
             $queue,
-            $queue . self::CONSUMER_TAG,
+            $this->queueOptions['consumerTag'],
             false,
             false,
             false,
