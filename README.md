@@ -3,6 +3,9 @@
 This package has been designed to switch out queue providers using a Queue & Consumer interface. You can use this package with
 RabbitMQ & SQS to seamlessly switch between the two. 
 
+## Requirements
+* PHP >= 7.2
+
 ## Install
 Install via Composer:
 
@@ -30,7 +33,7 @@ We've bundled the queues in docker so you should be able to run examples locally
 
 #### Options
 
-| Option | Description | Default | Values   |
+| Option | Description | Default | Values |
 |---|---|---|---|
 | blockingConsumer  | Whether the consume method should block execution or only process 1 message | true  | true/false |
 | prefetchSize  | Get the limit of messages that can be consumed by the channel |  null | any numeric value |
