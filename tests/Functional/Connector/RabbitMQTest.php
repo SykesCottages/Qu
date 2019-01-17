@@ -36,7 +36,7 @@ class RabbitMQTest extends RabbitMQTestCase
 
     public function testWeCanAcknowledgeMessageAndDeleteItFromTheQueue(): void
     {
-        $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+        $this->addMessageToQueue();
 
         $this->consumeOneMessage(self::QUEUE_NAME, 'acknowledge');
 
@@ -45,7 +45,7 @@ class RabbitMQTest extends RabbitMQTestCase
 
     public function testWeCanRejectAMessageAndSendItToTheDeadLetterQueue(): void
     {
-        $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+        $this->addMessageToQueue();
 
         $this->consumeOneMessage(self::QUEUE_NAME, 'reject');
 
@@ -59,7 +59,7 @@ class RabbitMQTest extends RabbitMQTestCase
             'blockingConsumer' => false
         ]);
 
-        $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+        $this->addMessageToQueue();
 
         $this->rabbitMq->consume(
             self::QUEUE_NAME,
@@ -71,7 +71,10 @@ class RabbitMQTest extends RabbitMQTestCase
                 $this->assertFunctionIsNotCalled();
             }
         );
-
     }
-    
+
+    private function addMessageToQueue(): void
+    {
+        $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+    }
 }

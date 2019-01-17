@@ -23,7 +23,8 @@ We've bundled the queues in docker so you should be able to run examples locally
 | Option  | Description  | Values   |
 |---|---|---|
 | blockingConsumer  | Whether the consume method should block execution or only process 1 message | Default: true (true/false)|
-
+| prefetchSize  | Get the limit of messages that can be consumed by the channel | Default: null (any numeric value)|
+| prefetchCount  | The limit of messages that we fetch from the queue | Default: 1 (any numeric value)|
 
 ### SQS
 

@@ -11,7 +11,7 @@ use SykesCottages\Qu\Connector\RabbitMQ;
 $rabbitMq = new RabbitMQ('localhost', 48888, 'admin', 'admin');
 
 $rabbitMq->setQueueOptions([
-    'blockingConsumer' => false
+    'blockingConsumer' => true
 ]);
 
 $testingQueue = new Queue('test', $rabbitMq);

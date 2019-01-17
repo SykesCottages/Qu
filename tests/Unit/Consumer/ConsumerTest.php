@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Consumer;
 
+use Mockery;
 use Mockery\Mock;
 use SykesCottages\Qu\Connector\Contract\QueueInterface;
 use SykesCottages\Qu\Connector\Queue;
@@ -31,7 +32,7 @@ class ConsumerTest extends UnitTestCase
 
     public function setUp(): void
     {
-        $this->queueProvider = \Mockery::mock(QueueInterface::class);
+        $this->queueProvider = Mockery::mock(QueueInterface::class);
 
         $this->queueConnector = new Queue(self::QUEUE_NAME, $this->queueProvider);
         $this->consumer = new TestConsumer($this->queueConnector);

@@ -18,7 +18,7 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     private const DEFAULT_PREFETCH_SIZE = null;
 
-    private const DEFAULT_IS_GLOBAL = null;
+    private const DEFAULT_IS_GLOBAL = false;
 
     private const PREFETCH_COUNT = 1;
 
@@ -30,7 +30,9 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
      * @var array
      */
     private $queueOptions = [
-        'blockingConsumer' => true
+        'blockingConsumer' => true,
+        'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
+        'prefetchCount' => self::PREFETCH_COUNT
     ];
 
     public function queueMessage(string $queue, array $message): void
@@ -48,8 +50,8 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         $this->connectToChannel();
 
         $this->channel->basic_qos(
-            self::DEFAULT_PREFETCH_SIZE,
-            self::PREFETCH_COUNT,
+            $this->queueOptions['prefetchSize'],
+            $this->queueOptions['prefetchCount'],
             self::DEFAULT_IS_GLOBAL
         );
 

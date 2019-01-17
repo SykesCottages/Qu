@@ -40,6 +40,11 @@ class SQSTest extends FunctionalTestCase
 
         $this->testingQueueUrl = getenv('SQS_ENDPOINT') . '/queue/' . self::QUEUE_NAME;
 
+        $this->sqs->setQueueOptions([
+            'blockingConsumer' => false,
+            'pollTime' => 0
+        ]);
+
         $this->sqs->purgeQueue([
             'QueueUrl' => $this->testingQueueUrl
         ]);
@@ -56,7 +61,7 @@ class SQSTest extends FunctionalTestCase
 
     public function testWeCanAcknowledgeAMessageInTheQueue(): void
     {
-        $this->sqs->queueMessage($this->testingQueueUrl, ['test' => 'example']);
+        $this->addMessageToQueue();
 
         $messages = $this->getMessages($this->testingQueueUrl);
 
@@ -69,7 +74,7 @@ class SQSTest extends FunctionalTestCase
 
     public function testWeCanRejectAMessageInTheQueue(): void
     {
-        $this->sqs->queueMessage($this->testingQueueUrl, ['test' => 'example']);
+        $this->addMessageToQueue();
 
         $messages = $this->getMessages($this->testingQueueUrl);
 
@@ -86,12 +91,7 @@ class SQSTest extends FunctionalTestCase
 
     public function testWeCanCallTheCallbackFunctionOnConsume(): void
     {
-        $this->sqs->setQueueOptions([
-            'blockingConsumer' => false,
-            'pollTime' => 0
-        ]);
-
-        $this->sqs->queueMessage($this->testingQueueUrl, ['test' => 'example']);
+        $this->addMessageToQueue();
 
         $this->sqs->consume(
             $this->testingQueueUrl,
@@ -107,11 +107,6 @@ class SQSTest extends FunctionalTestCase
 
     public function testWeCanCallTheIdleCallbackFunctionOnConsume(): void
     {
-        $this->sqs->setQueueOptions([
-            'blockingConsumer' => false,
-            'pollTime' => 0
-        ]);
-
         $this->sqs->consume(
             $this->testingQueueUrl,
             function (Message $message) {
@@ -121,6 +116,11 @@ class SQSTest extends FunctionalTestCase
                 $this->assertFunctionHasBeenCalled();
             }
         );
+    }
+
+    private function addMessageToQueue(): void
+    {
+        $this->sqs->queueMessage($this->testingQueueUrl, ['example' => 'test']);
     }
 
     private function getMessages(string $queueUrl): array
