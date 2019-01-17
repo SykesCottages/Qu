@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Connector;
 
-use PHPUnit\Framework\TestCase;
 use SykesCottages\Qu\Connector\SQS;
+use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
+use Tests\Functional\FunctionalTestCase;
 
-class SQSTest extends TestCase
+class SQSTest extends FunctionalTestCase
 {
     private const DEFAULT_NUMBER_OF_URLS = 2;
 
@@ -81,6 +82,45 @@ class SQSTest extends TestCase
         $messages = $this->getMessages($this->testingQueueUrl . '-deadletter');
 
         $this->assertCount(1, $messages);
+    }
+
+    public function testWeCanCallTheCallbackFunctionOnConsume(): void
+    {
+        $this->sqs->setQueueOptions([
+            'blockingConsumer' => false,
+            'pollTime' => 0
+        ]);
+
+        $this->sqs->queueMessage($this->testingQueueUrl, ['test' => 'example']);
+
+        $this->sqs->consume(
+            $this->testingQueueUrl,
+            function (Message $message) {
+                $this->assertFunctionHasBeenCalled();
+                $this->assertInstanceOf(SQSMessage::class, $message);
+            },
+            function () {
+                $this->assertFunctionIsNotCalled();
+            }
+        );
+    }
+
+    public function testWeCanCallTheIdleCallbackFunctionOnConsume(): void
+    {
+        $this->sqs->setQueueOptions([
+            'blockingConsumer' => false,
+            'pollTime' => 0
+        ]);
+
+        $this->sqs->consume(
+            $this->testingQueueUrl,
+            function (Message $message) {
+                $this->assertFunctionIsNotCalled();
+            },
+            function () {
+                $this->assertFunctionHasBeenCalled();
+            }
+        );
     }
 
     private function getMessages(string $queueUrl): array

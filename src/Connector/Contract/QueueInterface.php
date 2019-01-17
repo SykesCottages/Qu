@@ -15,4 +15,6 @@ interface QueueInterface
     public function acknowledge(string $queue, Message $message): void;
 
     public function reject(string $queue, Message $message, string $errorMessage = ''): void;
+
+    public function setQueueOptions(array $queueOptions): void;
 }

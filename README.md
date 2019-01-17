@@ -15,6 +15,26 @@ We've bundled the queues in docker so you should be able to run examples locally
 
 `docker-compose up -d` will start the PHP, RabbitMQ, SQS containers and you can run the examples locally. 
 
+## Queues
+
+### RabbitMQ
+
+#### Options
+| Option  | Description  | Values   |
+|---|---|---|
+| blockingConsumer  | Whether the consume method should block execution or only process 1 message | Default: true (true/false)|
+
+
+### SQS
+
+#### Options
+
+| Option  | Description  | Values   |
+|---|---|---|
+| blockingConsumer  | Whether the consume method should block execution or only process 1 message | Default: true (true/false)|
+| pollTime  | Set the consumer to do short polling or long polling | Default: 20 (0-20)|
+
+
 ## Available Queues
 ### RabbitMQ
 

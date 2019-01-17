@@ -20,6 +20,10 @@ $sqs = new SQS([
     'exception_class' => 'Aws\Exception\AwsException'
 ]);
 
+$sqs->setQueueOptions([
+    'blockingConsumer' => true,
+]);
+
 $testingQueue = new Queue('http://localhost:41662/queue/test', $sqs);
 // Create a new consumer for the test queue
 $consumer = new TestConsumer($testingQueue);

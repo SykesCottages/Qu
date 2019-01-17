@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Functional\Connector;
 
 use SykesCottages\Qu\Connector\RabbitMQ;
+use SykesCottages\Qu\Message\Contract\Message;
+use SykesCottages\Qu\Message\RabbitMQMessage;
 use Tests\Functional\RabbitMQTestCase;
 
 class RabbitMQTest extends RabbitMQTestCase
@@ -50,4 +52,26 @@ class RabbitMQTest extends RabbitMQTestCase
         $this->assertQueueIsEmpty(self::QUEUE_NAME);
         $this->assertQueueHasAMessage(self::DEAD_LETTER_QUEUE_NAME);
     }
+
+    public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage(): void
+    {
+        $this->rabbitMq->setQueueOptions([
+            'blockingConsumer' => false
+        ]);
+
+        $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+
+        $this->rabbitMq->consume(
+            self::QUEUE_NAME,
+            function (Message $message){
+                $this->assertFunctionHasBeenCalled();
+                $this->assertInstanceOf(RabbitMQMessage::class, $message);
+            },
+            function() {
+                $this->assertFunctionIsNotCalled();
+            }
+        );
+
+    }
+    
 }

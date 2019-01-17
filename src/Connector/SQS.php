@@ -14,6 +14,14 @@ final class SQS extends SqsClient implements QueueInterface
 {
     private const LONG_POLL_TIME = 20;
 
+    /**
+     * @var array
+     */
+    private $queueOptions = [
+        'blockingConsumer' => true,
+        'pollTime' => self::LONG_POLL_TIME
+    ];
+
     public function queueMessage(string $queue, array $message): void
     {
         $this->sendMessage([
@@ -28,7 +36,7 @@ final class SQS extends SqsClient implements QueueInterface
         do {
             $message = $this->receiveMessage([
                 'QueueUrl' => $queue,
-                'WaitTimeSeconds' => self::LONG_POLL_TIME,
+                'WaitTimeSeconds' => $this->queueOptions['pollTime'],
             ]);
 
             $messages = $message->get('Messages');
@@ -41,7 +49,7 @@ final class SQS extends SqsClient implements QueueInterface
             foreach ($messages as $message) {
                 $callback(new SQSMessage($message));
             }
-        } while (true);
+        } while ($this->queueOptions['blockingConsumer']);
     }
 
     public function acknowledge(string $queue, Message $message): void
@@ -63,6 +71,15 @@ final class SQS extends SqsClient implements QueueInterface
             'ReceiptHandle' => $message->getReceiptHandle(),
             'VisibilityTimeout' => 0
         ]);
+    }
+
+    public function setQueueOptions(array $queueOptions): void
+    {
+        foreach ($queueOptions as $option => $value) {
+            if (isset($this->queueOptions[$option])) {
+                $this->queueOptions[$option] = $value;
+            }
+        }
     }
 
     private function getMessageAttributes(array $message): array

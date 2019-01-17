@@ -26,20 +26,17 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
      * @var AMQPChannel
      */
     private $channel;
-
-    public function __construct(
-        string $host,
-        int $port,
-        string $user = 'guest',
-        string $pass = 'guest'
-    ) {
-        parent::__construct($host, $port, $user, $pass);
-
-        $this->channel = $this->channel();
-    }
+    /**
+     * @var array
+     */
+    private $queueOptions = [
+        'blockingConsumer' => true
+    ];
 
     public function queueMessage(string $queue, array $message): void
     {
+        $this->connectToChannel();
+
         $this->channel->basic_publish(
             new AMQPMessage(json_encode($message)),
             $queue
@@ -48,6 +45,8 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     public function consume(string $queue, callable $callback, callable $idleCallback): void
     {
+        $this->connectToChannel();
+
         $this->channel->basic_qos(
             self::DEFAULT_PREFETCH_SIZE,
             self::PREFETCH_COUNT,
@@ -66,9 +65,9 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             }
         );
 
-        while (count($this->channel->callbacks)) {
+        do {
             $this->channel->wait();
-        }
+        } while ($this->queueOptions['blockingConsumer']);
     }
 
     public function acknowledge(string $queue, Message $message): void
@@ -89,12 +88,30 @@ final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             ->basic_nack($message->getDeliveryTag());
     }
 
-    private function isMessageInTheCorrectFormat(Message $message)
+    public function setQueueOptions(array $queueOptions): void
+    {
+        foreach ($queueOptions as $option => $value) {
+            if (isset($this->queueOptions[$option])) {
+                $this->queueOptions[$option] = $value;
+            }
+        }
+    }
+
+    private function isMessageInTheCorrectFormat(Message $message): bool
     {
         if (!$message instanceof RabbitMqMessage) {
             throw new InvalidMessageTypeException(RabbitMQMessage::class);
         }
 
         return true;
+    }
+
+    private function connectToChannel(): bool
+    {
+        if (!$this->channel) {
+            $this->channel = $this->channel();
+        }
+
+        return $this->isConnected();
     }
 }

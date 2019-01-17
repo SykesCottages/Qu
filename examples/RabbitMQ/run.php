@@ -10,6 +10,10 @@ use SykesCottages\Qu\Connector\RabbitMQ;
 
 $rabbitMq = new RabbitMQ('localhost', 48888, 'admin', 'admin');
 
+$rabbitMq->setQueueOptions([
+    'blockingConsumer' => false
+]);
+
 $testingQueue = new Queue('test', $rabbitMq);
 // Create a new consumer for the test queue
 $consumer = new TestConsumer($testingQueue);
