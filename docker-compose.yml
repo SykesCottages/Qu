@@ -11,3 +11,10 @@ services:
     ports:
       - 29852:15672
       - 48888:5672
+  wait:
+    image: waisbrot/wait
+    links:
+      - rabbitmq
+      - sqs
+    environment:
+      - TARGETS=rabbitmq:5672,sqs:9324

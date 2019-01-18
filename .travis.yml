@@ -22,7 +22,6 @@ install:
   - php php-coveralls.phar --version
 
 script:
-  - sleep 10
   - ./vendor/bin/grumphp run
 
 after_success:
