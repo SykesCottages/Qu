@@ -10,6 +10,7 @@ services:
 
 before_install:
   - docker-compose up -d
+  - docker-compose -f docker-compose.yml run wait
 
 before_script:
   - mkdir -p build/logs
