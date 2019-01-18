@@ -11,11 +11,22 @@ services:
 before_install:
   - docker-compose up -d
 
+before_script:
+  - mkdir -p build/logs
+  - ls -al
+
 install:
   - travis_retry composer install --no-interaction
+  - wget -c -nc --retry-connrefused --tries=0 https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+  - chmod +x coveralls.phar
+  - php coveralls.phar --version
 
 script:
   - ./vendor/bin/grumphp run
+
+after_success:
+  - travis_retry php coveralls.phar -v
+  - bash <(curl -s https://codecov.io/bash)
 
 cache:
   directories:
