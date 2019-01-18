@@ -63,11 +63,11 @@ class RabbitMQTest extends RabbitMQTestCase
 
         $this->rabbitMq->consume(
             self::QUEUE_NAME,
-            function (Message $message){
+            function (Message $message) {
                 $this->assertFunctionHasBeenCalled();
                 $this->assertInstanceOf(RabbitMQMessage::class, $message);
             },
-            function() {
+            function () {
                 $this->assertFunctionIsNotCalled();
             }
         );

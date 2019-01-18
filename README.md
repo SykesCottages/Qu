@@ -1,5 +1,8 @@
 # Qu
 
+[![Build Status](https://travis-ci.org/SykesCottages/Qu.svg?branch=master)](https://travis-ci.org/SykesCottages/Qu) 
+[![Coverage Status](https://coveralls.io/repos/github/SykesCottages/Qu/badge.svg?branch=master)](https://coveralls.io/github/SykesCottages/Qu?branch=master)
+
 This package has been designed to switch out queue providers using a Queue & Consumer interface. You can use this package with
 RabbitMQ & SQS to seamlessly switch between the two. 
 
