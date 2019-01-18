@@ -56,7 +56,8 @@ class RabbitMQTestCase extends FunctionalTestCase
             false,
             function (AMQPMessage $message) use ($queueName, $callbackFunctionName) {
                 $this->rabbitMq->{$callbackFunctionName}($queueName, new RabbitMQMessage($message));
-            });
+            }
+        );
 
         $this->channel->wait();
     }

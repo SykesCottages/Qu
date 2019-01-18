@@ -12,6 +12,7 @@ parameters:
             tab_width: ~
             whitelist_patterns:
                 - /^src/
+                - /^tests/
             encoding: ~
             ignore_patterns:
                 - /^vendor/
