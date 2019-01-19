@@ -1,7 +1,5 @@
 language: php
 
-dist: xenial
-
 php:
   - '7.2'
   - '7.3'
@@ -11,18 +9,17 @@ services:
   - docker
 
 before_install:
-  - docker-compose up -d
+  - docker-compose -f docker-compose.yml up -d
   - docker-compose -f docker-compose.yml run wait
-
-before_script:
-  - mkdir -p build/logs
-  - ls -al
 
 install:
   - travis_retry composer install --no-interaction
   - wget -c -nc --retry-connrefused --tries=0 https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
   - chmod +x php-coveralls.phar
   - php php-coveralls.phar --version
+
+before_script:
+  - mkdir -p build/logs
 
 script:
   - ./vendor/bin/grumphp run
