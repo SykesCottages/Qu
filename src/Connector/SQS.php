@@ -10,7 +10,7 @@ use SykesCottages\Qu\Exception\InvalidMessageTypeException;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
 
-final class SQS extends SqsClient implements QueueInterface
+class SQS extends SqsClient implements QueueInterface
 {
     private const LONG_POLL_TIME = 20;
 
