@@ -12,7 +12,7 @@ use SykesCottages\Qu\Exception\InvalidMessageTypeException;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\RabbitMQMessage;
 
-final class RabbitMQ extends AMQPLazyConnection implements QueueInterface
+class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 {
     private const CONSUMER_TAG = 'default.consumer.tag';
 
