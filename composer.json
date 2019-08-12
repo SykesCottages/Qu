@@ -2,6 +2,7 @@
   "name": "sykescottages/qu",
   "type": "library",
   "description": "",
+  "license": "MIT",
   "authors": [
     {
       "name": "Richard Hughes",
