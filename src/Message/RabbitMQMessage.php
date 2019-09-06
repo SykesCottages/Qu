@@ -20,7 +20,7 @@ class RabbitMQMessage implements Message
         $this->message = $message;
     }
 
-    public function getBody(): array
+    public function getBody(): ?array
     {
         return json_decode($this->message->getBody(), true);
     }
