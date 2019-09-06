@@ -14,12 +14,17 @@ class SQS extends SqsClient implements QueueInterface
 {
     private const LONG_POLL_TIME = 20;
 
+    private const MAX_NUMBER_OF_MESSAGES_PER_POLL = 10;
+
+    private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
+
     /**
      * @var array
      */
     private $queueOptions = [
         'blockingConsumer' => true,
-        'pollTime' => self::LONG_POLL_TIME
+        'pollTime' => self::LONG_POLL_TIME,
+        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL
     ];
 
     public function queueMessage(string $queue, array $message): void
@@ -37,6 +42,7 @@ class SQS extends SqsClient implements QueueInterface
             $message = $this->receiveMessage([
                 'QueueUrl' => $queue,
                 'WaitTimeSeconds' => $this->queueOptions['pollTime'],
+                'MaxNumberOfMessages' => $this->getMaxNumberOfMessagesPerConsume(),
             ]);
 
             $messages = $message->get('Messages');
@@ -101,5 +107,18 @@ class SQS extends SqsClient implements QueueInterface
         }
 
         return true;
+    }
+
+    private function getMaxNumberOfMessagesPerConsume() : int
+    {
+        if ($this->queueOptions['maxNumberOfMessagesPerConsume'] > self::MAX_NUMBER_OF_MESSAGES_PER_POLL) {
+            return self::MAX_NUMBER_OF_MESSAGES_PER_POLL;
+        }
+
+        if ($this->queueOptions['maxNumberOfMessagesPerConsume'] < self::MIN_NUMBER_OF_MESSAGES_PER_POLL) {
+            return self::MIN_NUMBER_OF_MESSAGES_PER_POLL;
+        }
+
+        return (int) $this->queueOptions['maxNumberOfMessagesPerConsume'];
     }
 }
