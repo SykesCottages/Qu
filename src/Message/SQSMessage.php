@@ -18,13 +18,18 @@ class SQSMessage implements Message
         $this->message = $message;
     }
 
-    public function getBody(): array
+    public function getBody() : ?array
     {
         return json_decode($this->message['Body'], true);
     }
 
-    public function getReceiptHandle(): string
+    public function getReceiptHandle() : string
     {
         return $this->message['ReceiptHandle'];
+    }
+
+    public function getRawMessage() : array
+    {
+        return $this->message;
     }
 }
