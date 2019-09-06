@@ -61,3 +61,4 @@ We've bundled the queues in docker so you should be able to run examples locally
 |---|---|---|---|
 | blockingConsumer  | Whether the consume method should block execution or only process 1 message | true | true/false|
 | pollTime  | Set the consumer to do short polling or long polling | 20 | 0-20|
+| maxNumberOfMessagesPerConsume  | The amount of messages each poll/consume will retrieve from the queue | 1 | 1-10|
