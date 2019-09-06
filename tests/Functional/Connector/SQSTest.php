@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Connector;
 
+use Mockery;
 use SykesCottages\Qu\Connector\SQS;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
+use Tests\Functional\Connector\Stubs\SQSCallable;
 use Tests\Functional\FunctionalTestCase;
 
 class SQSTest extends FunctionalTestCase
 {
     private const DEFAULT_NUMBER_OF_URLS = 2;
+
+    private const MAX_NUMBER_OF_MESSAGES_PER_POLL = 10;
+
+    private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
     private const QUEUE_NAME = 'test';
 
@@ -116,6 +122,59 @@ class SQSTest extends FunctionalTestCase
                 $this->assertFunctionHasBeenCalled();
             }
         );
+    }
+
+    public function retrieveMinAndMaxDataProvider() : array
+    {
+        return [
+            'Test if we specify more than the MAX it will cap to the MAX value allowed by SQS' => [
+                100,
+                self::MAX_NUMBER_OF_MESSAGES_PER_POLL,
+            ],
+            'Test if we specify less than the MIN value it will cap to the MIN value' => [
+                0,
+                self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
+            ],
+        ];
+    }
+
+    /**
+     * @param int $numberOfMessagesToConsumeAtATime
+     * @param int $expectedNumberOfCallbackCalls
+     *
+     * @dataProvider retrieveMinAndMaxDataProvider
+     */
+    public function testWeCanOnlyRetrieveMessagesBetweenTheMaxAndMin(
+        int $numberOfMessagesToConsumeAtATime,
+        int $expectedNumberOfCallbackCalls
+    ): void {
+        $this->addMultipleMessagesToQueue(100);
+
+        $this->sqs->setQueueOptions([
+            'maxNumberOfMessagesPerConsume' => $numberOfMessagesToConsumeAtATime,
+        ]);
+
+        $mock = Mockery::mock(SQSCallable::class);
+
+        $mock->shouldReceive('__invoke')
+            ->times($expectedNumberOfCallbackCalls);
+
+        $this->sqs->consume(
+            $this->testingQueueUrl,
+            $mock,
+            function () {
+                $this->assertFunctionIsNotCalled();
+            }
+        );
+    }
+
+    private function addMultipleMessagesToQueue(int $messagesToSend) : void
+    {
+        $countOfMessages = 0;
+        while ($countOfMessages < $messagesToSend) {
+            $this->addMessageToQueue();
+            $countOfMessages++;
+        }
     }
 
     private function addMessageToQueue(): void
