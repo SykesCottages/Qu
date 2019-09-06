@@ -24,7 +24,7 @@ class SQS extends SqsClient implements QueueInterface
     private $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
-        'maxNumberOfMessagesPerConsume' => 1
+        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL
     ];
 
     public function queueMessage(string $queue, array $message): void
