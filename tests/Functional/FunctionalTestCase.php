@@ -21,4 +21,15 @@ class FunctionalTestCase extends TestCase
     {
         $this->assertTrue(true);
     }
+
+    public function tearDown() : void
+    {
+        $container = \Mockery::getContainer();
+
+        if ($container) {
+            $this->addToAssertionCount($container->mockery_getExpectationCount());
+        }
+
+        parent::tearDown();
+    }
 }
