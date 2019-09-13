@@ -1,16 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SykesCottages\Qu\Message;
 
 use SykesCottages\Qu\Message\Contract\Message;
+use function json_decode;
 
 class SQSMessage implements Message
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $message;
 
     public function __construct(array $message)

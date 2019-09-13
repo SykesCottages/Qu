@@ -1,14 +1,16 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SykesCottages\Qu\Exception;
 
 use LogicException;
+use function sprintf;
 
 class InvalidMessageTypeException extends LogicException
 {
-    protected $message = "Message is not the correct type: %s";
+    /** @var string */
+    protected $message = 'Message is not the correct type: %s';
 
     public function __construct(string $messageType)
     {

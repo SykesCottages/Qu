@@ -18,25 +18,23 @@ class SQS extends SqsClient implements QueueInterface
 
     private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
-        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL
+        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
     ];
 
-    public function queueMessage(string $queue, array $message): void
+    public function queueMessage(string $queue, array $message) : void
     {
         $this->sendMessage([
             'QueueUrl' => $queue,
             'MessageBody' => json_encode($message),
-            'MessageAttributes' => $this->getMessageAttributes($message)
+            'MessageAttributes' => $this->getMessageAttributes($message),
         ]);
     }
 
-    public function consume(string $queue, callable $callback, callable $idleCallback): void
+    public function consume(string $queue, callable $callback, callable $idleCallback) : void
     {
         do {
             $message = $this->receiveMessage([
@@ -47,7 +45,7 @@ class SQS extends SqsClient implements QueueInterface
 
             $messages = $message->get('Messages');
 
-            if (!$messages) {
+            if (! $messages) {
                 $idleCallback();
                 continue;
             }
@@ -58,28 +56,28 @@ class SQS extends SqsClient implements QueueInterface
         } while ($this->queueOptions['blockingConsumer']);
     }
 
-    public function acknowledge(string $queue, Message $message): void
+    public function acknowledge(string $queue, Message $message) : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
         $this->deleteMessage([
             'QueueUrl' => $queue,
-            'ReceiptHandle' => $message->getReceiptHandle()
+            'ReceiptHandle' => $message->getReceiptHandle(),
         ]);
     }
 
-    public function reject(string $queue, Message $message, string $errorMessage = ''): void
+    public function reject(string $queue, Message $message, string $errorMessage = '') : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
         $this->changeMessageVisibility([
             'QueueUrl' => $queue,
             'ReceiptHandle' => $message->getReceiptHandle(),
-            'VisibilityTimeout' => 0
+            'VisibilityTimeout' => 0,
         ]);
     }
 
-    public function setQueueOptions(array $queueOptions): void
+    public function setQueueOptions(array $queueOptions) : void
     {
         foreach ($queueOptions as $option => $value) {
             if (isset($this->queueOptions[$option])) {
@@ -88,21 +86,21 @@ class SQS extends SqsClient implements QueueInterface
         }
     }
 
-    private function getMessageAttributes(array $message): array
+    private function getMessageAttributes(array $message) : array
     {
         $messageAttributes = [];
         foreach ($message as $key => $value) {
             $messageAttributes[$key] = [
                 'DataType' => 'String',
-                'StringValue' => $value
+                'StringValue' => $value,
             ];
         }
         return $messageAttributes;
     }
 
-    private function isMessageInTheCorrectFormat(Message $message)
+    private function isMessageInTheCorrectFormat(Message $message) : bool
     {
-        if (!$message instanceof SQSMessage) {
+        if (! $message instanceof SQSMessage) {
             throw new InvalidMessageTypeException(SQSMessage::class);
         }
 

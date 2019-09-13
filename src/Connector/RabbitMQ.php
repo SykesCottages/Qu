@@ -33,10 +33,10 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
         'prefetchCount' => self::PREFETCH_COUNT,
-        'consumerTag' => self::CONSUMER_TAG
+        'consumerTag' => self::CONSUMER_TAG,
     ];
 
-    public function queueMessage(string $queue, array $message): void
+    public function queueMessage(string $queue, array $message) : void
     {
         $this->connectToChannel();
 
@@ -46,7 +46,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         );
     }
 
-    public function consume(string $queue, callable $callback, callable $idleCallback): void
+    public function consume(string $queue, callable $callback, callable $idleCallback) : void
     {
         $this->connectToChannel();
 
@@ -73,7 +73,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         } while ($this->queueOptions['blockingConsumer']);
     }
 
-    public function acknowledge(string $queue, Message $message): void
+    public function acknowledge(string $queue, Message $message) : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -82,7 +82,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             ->basic_ack($message->getDeliveryTag());
     }
 
-    public function reject(string $queue, Message $message, string $errorMessage = ''): void
+    public function reject(string $queue, Message $message, string $errorMessage = '') : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -91,7 +91,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             ->basic_nack($message->getDeliveryTag());
     }
 
-    public function setQueueOptions(array $queueOptions): void
+    public function setQueueOptions(array $queueOptions) : void
     {
         foreach ($queueOptions as $option => $value) {
             if (isset($this->queueOptions[$option])) {
@@ -100,18 +100,18 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         }
     }
 
-    private function isMessageInTheCorrectFormat(Message $message): bool
+    private function isMessageInTheCorrectFormat(Message $message) : bool
     {
-        if (!$message instanceof RabbitMqMessage) {
+        if (! $message instanceof RabbitMqMessage) {
             throw new InvalidMessageTypeException(RabbitMQMessage::class);
         }
 
         return true;
     }
 
-    private function connectToChannel(): bool
+    private function connectToChannel() : bool
     {
-        if (!$this->channel) {
+        if (! $this->channel) {
             $this->channel = $this->channel();
         }
 
