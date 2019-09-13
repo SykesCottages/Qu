@@ -46,6 +46,20 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         );
     }
 
+    public function queueBatch(string $queue, array $messages) : void
+    {
+        $this->connectToChannel();
+
+        foreach ($messages as $message) {
+            $this->channel->batch_basic_publish(
+                new AMQPMessage(json_encode($message)),
+                $queue
+            );
+        }
+
+        $this->channel->publish_batch();
+    }
+
     public function consume(string $queue, callable $callback, callable $idleCallback): void
     {
         $this->connectToChannel();
