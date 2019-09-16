@@ -8,9 +8,10 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use SykesCottages\Qu\Connector\Contract\QueueInterface;
-use SykesCottages\Qu\Exception\InvalidMessageTypeException;
+use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\RabbitMQMessage;
+use function json_encode;
 
 class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 {
@@ -22,13 +23,10 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     private const PREFETCH_COUNT = 1;
 
-    /**
-     * @var AMQPChannel
-     */
+    /** @var AMQPChannel */
     private $channel;
-    /**
-     * @var array
-     */
+
+    /** @var array */
     private $queueOptions = [
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
@@ -63,7 +61,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             false,
             false,
             false,
-            function (AMQPMessage $message) use ($callback) {
+            static function (AMQPMessage $message) use ($callback) : void {
                 $callback(new RabbitMQMessage($message));
             }
         );
@@ -102,8 +100,8 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
 
     private function isMessageInTheCorrectFormat(Message $message) : bool
     {
-        if (! $message instanceof RabbitMqMessage) {
-            throw new InvalidMessageTypeException(RabbitMQMessage::class);
+        if (! $message instanceof RabbitMQMessage) {
+            throw new InvalidMessageType(RabbitMQMessage::class);
         }
 
         return true;

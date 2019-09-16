@@ -6,9 +6,10 @@ namespace SykesCottages\Qu\Connector;
 
 use Aws\Sqs\SqsClient;
 use SykesCottages\Qu\Connector\Contract\QueueInterface;
-use SykesCottages\Qu\Exception\InvalidMessageTypeException;
+use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
+use function json_encode;
 
 class SQS extends SqsClient implements QueueInterface
 {
@@ -95,13 +96,14 @@ class SQS extends SqsClient implements QueueInterface
                 'StringValue' => $value,
             ];
         }
+
         return $messageAttributes;
     }
 
     private function isMessageInTheCorrectFormat(Message $message) : bool
     {
         if (! $message instanceof SQSMessage) {
-            throw new InvalidMessageTypeException(SQSMessage::class);
+            throw new InvalidMessageType(SQSMessage::class);
         }
 
         return true;

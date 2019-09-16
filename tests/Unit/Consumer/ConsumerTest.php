@@ -9,7 +9,7 @@ use Mockery\Mock;
 use SykesCottages\Qu\Connector\Contract\QueueInterface;
 use SykesCottages\Qu\Connector\Queue;
 use SykesCottages\Qu\Consumer\Consumer;
-use SykesCottages\Qu\Exception\ExitRequestedException;
+use SykesCottages\Qu\Exception\ExitRequested;
 use Tests\Unit\Consumer\Stub\TestConsumer;
 use Tests\Unit\UnitTestCase;
 
@@ -55,7 +55,7 @@ class ConsumerTest extends UnitTestCase
             sprintf('Exit has been requested for the queue: %s', self::QUEUE_NAME)
         );
 
-        $this->expectException(ExitRequestedException::class);
+        $this->expectException(ExitRequested::class);
 
         $this->consumer->requestExit();
         $this->consumer->idle();

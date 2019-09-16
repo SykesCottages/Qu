@@ -7,7 +7,7 @@ namespace SykesCottages\Qu\Exception;
 use LogicException;
 use function sprintf;
 
-class InvalidMessageTypeException extends LogicException
+class InvalidMessageType extends LogicException
 {
     /** @var string */
     protected $message = 'Message is not the correct type: %s';

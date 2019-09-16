@@ -8,7 +8,7 @@ use Mockery;
 use Mockery\Mock;
 use SykesCottages\Qu\Connector\RabbitMQ;
 use SykesCottages\Qu\Connector\SQS;
-use SykesCottages\Qu\Exception\InvalidMessageTypeException;
+use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use Tests\Unit\UnitTestCase;
 
@@ -43,7 +43,7 @@ class RabbitMQTest extends UnitTestCase
      */
     public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
     {
-        $this->expectException(InvalidMessageTypeException::class);
+        $this->expectException(InvalidMessageType::class);
 
         $this->expectExceptionMessage('Message is not the correct type: SykesCottages\Qu\Message\RabbitMQMessage');
 

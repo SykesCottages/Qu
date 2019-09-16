@@ -5,14 +5,14 @@ declare(strict_types = 1);
 namespace Tests\Exception;
 
 use LogicException;
-use SykesCottages\Qu\Exception\InvalidMessageTypeException;
+use SykesCottages\Qu\Exception\InvalidMessageType;
 use Tests\Unit\UnitTestCase;
 
 class InvalidMessageTypeExceptionTest extends UnitTestCase
 {
     public function testExceptionMatchesLogicExceptionClass(): void
     {
-        $exception = new InvalidMessageTypeException(
+        $exception = new InvalidMessageType(
             InvalidMessageTypeExceptionTest::class
         );
 
@@ -26,7 +26,7 @@ class InvalidMessageTypeExceptionTest extends UnitTestCase
      */
     public function testExceptionProducesCorrectMessageBasedOnClassName(string $className, string $expectedResult): void
     {
-        $exception = new InvalidMessageTypeException($className);
+        $exception = new InvalidMessageType($className);
         $this->assertSame($expectedResult, $exception->getMessage());
     }
 

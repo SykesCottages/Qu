@@ -7,7 +7,7 @@ namespace SykesCottages\Qu\Exception;
 use Exception;
 use function sprintf;
 
-class ExitRequestedException extends Exception
+class ExitRequested extends Exception
 {
     /** @var string */
     protected $message = 'Exit has been requested for the queue: %s';
