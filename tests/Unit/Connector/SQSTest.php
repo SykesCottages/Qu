@@ -15,16 +15,12 @@ class SQSTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
-    /**
-     * @var Mock|Message
-     */
+    /** @var Mock|Message */
     private $genericMessage;
-    /**
-     * @var SQS
-     */
+    /** @var SQS */
     private $sqs;
 
-    public function setUp(): void
+    public function setUp() : void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
@@ -32,15 +28,14 @@ class SQSTest extends UnitTestCase
             'service' => 'sqs',
             'region' => 'elasticmq',
             'version' => '2012-11-05',
-            'exception_class' => 'Aws\Exception\AwsException'
+            'exception_class' => 'Aws\Exception\AwsException',
         ]);
     }
 
     /**
-     * @param string $functionName
      * @dataProvider functionDataProvider
      */
-    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
+    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName) : void
     {
         $this->expectException(InvalidMessageType::class);
 
@@ -49,15 +44,14 @@ class SQSTest extends UnitTestCase
         $this->sqs->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
     }
 
-    public function functionDataProvider(): array
+    /**
+     * @return string[][]
+     */
+    public function functionDataProvider() : array
     {
         return [
-            'test reject returns the correct exception' => [
-                'reject'
-            ],
-            'test acknowledge returns the correct exception' => [
-                'acknowledge'
-            ]
+            'test reject returns the correct exception' => ['reject'],
+            'test acknowledge returns the correct exception' => ['acknowledge'],
         ];
     }
 }

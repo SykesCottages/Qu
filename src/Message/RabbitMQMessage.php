@@ -19,6 +19,9 @@ class RabbitMQMessage implements Message
         $this->message = $message;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getBody() : ?array
     {
         return json_decode($this->message->getBody(), true);

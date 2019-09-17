@@ -7,41 +7,36 @@ namespace Tests\Unit\Connector;
 use Mockery;
 use Mockery\Mock;
 use SykesCottages\Qu\Connector\RabbitMQ;
-use SykesCottages\Qu\Connector\SQS;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use Tests\Unit\UnitTestCase;
+use function getenv;
 
 class RabbitMQTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
-    /**
-     * @var Mock|Message
-     */
+    /** @var Mock|Message */
     private $genericMessage;
-    /**
-     * @var RabbitMQ
-     */
+    /** @var RabbitMQ */
     private $rabbitMQ;
 
-    public function setUp(): void
+    public function setUp() : void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
         $this->rabbitMQ = new RabbitMQ(
             getenv('RABBIT_MQ_HOST'),
-            (int)getenv('RABBIT_MQ_PORT'),
+            (int) getenv('RABBIT_MQ_PORT'),
             getenv('RABBIT_MQ_USER'),
             getenv('RABBIT_MQ_PASSWORD')
         );
     }
 
     /**
-     * @param string $functionName
      * @dataProvider functionDataProvider
      */
-    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
+    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName) : void
     {
         $this->expectException(InvalidMessageType::class);
 
@@ -50,15 +45,14 @@ class RabbitMQTest extends UnitTestCase
         $this->rabbitMQ->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
     }
 
-    public function functionDataProvider(): array
+    /**
+     * @return string[][]
+     */
+    public function functionDataProvider() : array
     {
         return [
-            'test reject returns the correct exception' => [
-                'reject'
-            ],
-            'test acknowledge returns the correct exception' => [
-                'acknowledge'
-            ]
+            'test reject returns the correct exception' => ['reject'],
+            'test acknowledge returns the correct exception' => ['acknowledge'],
         ];
     }
 }

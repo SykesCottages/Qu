@@ -6,7 +6,7 @@ namespace Tests\Functional\Connector\Stubs;
 
 class SQSCallable
 {
-    public function __invoke()
+    public function __invoke() : void
     {
     }
 }

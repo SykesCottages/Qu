@@ -7,13 +7,13 @@ namespace SykesCottages\Qu\Connector;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use SykesCottages\Qu\Connector\Contract\QueueInterface;
+use SykesCottages\Qu\Connector\Contract\Queue;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\RabbitMQMessage;
 use function json_encode;
 
-class RabbitMQ extends AMQPLazyConnection implements QueueInterface
+class RabbitMQ extends AMQPLazyConnection implements Queue
 {
     private const CONSUMER_TAG = 'default.consumer.tag';
 
@@ -26,7 +26,7 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
     /** @var AMQPChannel */
     private $channel;
 
-    /** @var array */
+    /** @var string[] */
     private $queueOptions = [
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
@@ -34,6 +34,9 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
         'consumerTag' => self::CONSUMER_TAG,
     ];
 
+    /**
+     * @param string[] $message
+     */
     public function queueMessage(string $queue, array $message) : void
     {
         $this->connectToChannel();
@@ -89,12 +92,17 @@ class RabbitMQ extends AMQPLazyConnection implements QueueInterface
             ->basic_nack($message->getDeliveryTag());
     }
 
+    /**
+     * @param string[] $queueOptions
+     */
     public function setQueueOptions(array $queueOptions) : void
     {
         foreach ($queueOptions as $option => $value) {
-            if (isset($this->queueOptions[$option])) {
-                $this->queueOptions[$option] = $value;
+            if (! isset($this->queueOptions[$option])) {
+                continue;
             }
+
+            $this->queueOptions[$option] = $value;
         }
     }
 

@@ -9,14 +9,20 @@ use function json_decode;
 
 class SQSMessage implements Message
 {
-    /** @var array */
+    /** @var string[] */
     private $message;
 
+    /**
+     * @param string[] $message
+     */
     public function __construct(array $message)
     {
         $this->message = $message;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getBody() : ?array
     {
         return json_decode($this->message['Body'], true);
@@ -27,6 +33,9 @@ class SQSMessage implements Message
         return $this->message['ReceiptHandle'];
     }
 
+    /**
+     * @return string[]
+     */
     public function getRawMessage() : array
     {
         return $this->message;

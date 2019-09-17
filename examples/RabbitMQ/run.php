@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 include '../../vendor/autoload.php';
 
@@ -10,9 +10,7 @@ use SykesCottages\Qu\Connector\RabbitMQ;
 
 $rabbitMq = new RabbitMQ('localhost', 48888, 'admin', 'admin');
 
-$rabbitMq->setQueueOptions([
-    'blockingConsumer' => true
-]);
+$rabbitMq->setQueueOptions(['blockingConsumer' => true]);
 
 $testingQueue = new Queue('test', $rabbitMq);
 // Create a new consumer for the test queue

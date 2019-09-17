@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SykesCottages\Qu\Connector;
 
-use SykesCottages\Qu\Connector\Contract\QueueInterface;
+use SykesCottages\Qu\Connector\Contract\Queue as QueueInterface;
 use SykesCottages\Qu\Consumer\Contract\Consumable;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\Contract\MessageHandler;
@@ -14,7 +14,7 @@ final class Queue implements Consumable, MessageHandler
     /** @var string */
     private $name;
 
-    /** @var QueueInterface */
+    /** @var Queue */
     private $queue;
 
     public function __construct(string $name, QueueInterface $queue)
@@ -28,6 +28,9 @@ final class Queue implements Consumable, MessageHandler
         return $this->name;
     }
 
+    /**
+     * @param string[] $body
+     */
     public function queueMessage(array $body) : void
     {
         $this->queue->queueMessage($this->name, $body);

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace SykesCottages\Qu\Connector;
 
 use Aws\Sqs\SqsClient;
-use SykesCottages\Qu\Connector\Contract\QueueInterface;
+use SykesCottages\Qu\Connector\Contract\Queue;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
 use function json_encode;
 
-class SQS extends SqsClient implements QueueInterface
+class SQS extends SqsClient implements Queue
 {
     private const LONG_POLL_TIME = 20;
 
@@ -19,13 +19,16 @@ class SQS extends SqsClient implements QueueInterface
 
     private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
-    /** @var array */
+    /** @var string[] */
     private $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
         'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
     ];
 
+    /**
+     * @param string[] $message
+     */
     public function queueMessage(string $queue, array $message) : void
     {
         $this->sendMessage([
@@ -78,15 +81,25 @@ class SQS extends SqsClient implements QueueInterface
         ]);
     }
 
+    /**
+     * @param string[] $queueOptions
+     */
     public function setQueueOptions(array $queueOptions) : void
     {
         foreach ($queueOptions as $option => $value) {
-            if (isset($this->queueOptions[$option])) {
-                $this->queueOptions[$option] = $value;
+            if (! isset($this->queueOptions[$option])) {
+                continue;
             }
+
+            $this->queueOptions[$option] = $value;
         }
     }
 
+    /**
+     * @param string[] $message
+     *
+     * @return string[][]
+     */
     private function getMessageAttributes(array $message) : array
     {
         $messageAttributes = [];

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Message;
 
@@ -12,22 +12,18 @@ use Tests\Unit\UnitTestCase;
 
 class RabbitMQMessageTest extends UnitTestCase
 {
-    /**
-     * @var AMQPMessage
-     */
+    /** @var AMQPMessage */
     private $amqpMessage;
-    /**
-     * @var RabbitMQMessage
-     */
+    /** @var RabbitMQMessage */
     private $rabbitMqMessage;
 
-    public function setUp(): void
+    public function setUp() : void
     {
-        $this->amqpMessage = Mockery::mock(AMQPMessage::class);
+        $this->amqpMessage     = Mockery::mock(AMQPMessage::class);
         $this->rabbitMqMessage = new RabbitMQMessage($this->amqpMessage);
     }
 
-    public function testTheBodyIsReturnedAsAnAssociativeArray(): void
+    public function testTheBodyIsReturnedAsAnAssociativeArray() : void
     {
         $this->amqpMessage
             ->shouldReceive('getBody')
@@ -35,14 +31,12 @@ class RabbitMQMessageTest extends UnitTestCase
             ->withNoArgs()
             ->andReturn('{"test":"example"}');
 
-        $expectedResult = [
-            'test' => 'example'
-        ];
+        $expectedResult = ['test' => 'example'];
 
         $this->assertSame($expectedResult, $this->rabbitMqMessage->getBody());
     }
 
-    public function testTheBodyIsEmptyIfBlankJSONStringIsReturned(): void
+    public function testTheBodyIsEmptyIfBlankJSONStringIsReturned() : void
     {
         $this->amqpMessage
             ->shouldReceive('getBody')
@@ -53,7 +47,7 @@ class RabbitMQMessageTest extends UnitTestCase
         $this->assertEmpty($this->rabbitMqMessage->getBody());
     }
 
-    public function testGetDeliveryInfoChannelReturnsWithAChannel(): void
+    public function testGetDeliveryInfoChannelReturnsWithAChannel() : void
     {
         $this->amqpMessage
             ->shouldReceive('get')
@@ -64,7 +58,7 @@ class RabbitMQMessageTest extends UnitTestCase
         $this->assertInstanceOf(AMQPChannel::class, $this->rabbitMqMessage->getDeliveryInfoChannel());
     }
 
-    public function testGetDeliveryTagReturnsWithString(): void
+    public function testGetDeliveryTagReturnsWithString() : void
     {
         $randomDeliveryTag = 'THIS IS A RANDOM STRING';
 
