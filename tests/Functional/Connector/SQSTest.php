@@ -47,6 +47,7 @@ class SQSTest extends FunctionalTestCase
         $this->sqs->setQueueOptions([
             'blockingConsumer' => false,
             'pollTime' => 0,
+            'non-existing-option' => true,
         ]);
 
         $this->sqs->purgeQueue([

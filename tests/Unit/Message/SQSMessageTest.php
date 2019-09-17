@@ -37,4 +37,9 @@ class SQSMessageTest extends UnitTestCase
     {
         $this->assertSame(self::RECEIPT_HANDLE, $this->sqsMessage->getReceiptHandle());
     }
+
+    public function testRawMessageReturnsTheEntireMessage() : void
+    {
+        $this->assertSame($this->message, $this->sqsMessage->getRawMessage());
+    }
 }
