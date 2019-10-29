@@ -11,41 +11,37 @@ use SykesCottages\Qu\Message\RabbitMQMessage;
 
 class RabbitMQTestCase extends FunctionalTestCase
 {
-    /**
-     * @var RabbitMQ
-     */
+    /** @var RabbitMQ */
     protected $rabbitMq;
 
-    /**
-     * @var AMQPChannel
-     */
+    /** @var AMQPChannel */
     protected $channel;
 
-    public function tearDown(): void
+    public function tearDown() : void
     {
         parent::tearDown();
 
         $this->channel->close();
     }
 
-    protected function assertQueueIsEmpty(string $queueName): void
+    protected function assertQueueIsEmpty(string $queueName) : void
     {
         $message = $this->channel->basic_get($queueName);
         $this->assertNull($message);
     }
 
-    protected function assertQueueHasAMessage(string $queueName): void
+    protected function assertQueueHasAMessage(string $queueName) : void
     {
         $message = $this->channel->basic_get($queueName);
         $this->assertInstanceOf(AMQPMessage::class, $message);
     }
 
-    protected function cleanUpMessages(string $queueName): void
+    protected function cleanUpMessages(string $queueName) : void
     {
         $this->channel->queue_purge($queueName);
     }
 
-    protected function consumeOneMessage(string $queueName, string $callbackFunctionName): void
+    protected function consumeOneMessage(string $queueName, string $callbackFunctionName) : void
     {
         $this->channel->basic_consume(
             $queueName,
@@ -54,7 +50,7 @@ class RabbitMQTestCase extends FunctionalTestCase
             false,
             false,
             false,
-            function (AMQPMessage $message) use ($queueName, $callbackFunctionName) {
+            function (AMQPMessage $message) use ($queueName, $callbackFunctionName) : void {
                 $this->rabbitMq->{$callbackFunctionName}($queueName, new RabbitMQMessage($message));
             }
         );

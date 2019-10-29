@@ -17,12 +17,10 @@ $sqs = new SQS([
         'secret' => 'X',
     ],
     'version' => '2012-11-05',
-    'exception_class' => 'Aws\Exception\AwsException'
+    'exception_class' => 'Aws\Exception\AwsException',
 ]);
 
-$sqs->setQueueOptions([
-    'blockingConsumer' => true,
-]);
+$sqs->setQueueOptions(['blockingConsumer' => true]);
 
 $testingQueue = new Queue('http://localhost:41662/queue/test', $sqs);
 // Create a new consumer for the test queue

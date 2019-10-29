@@ -8,6 +8,7 @@ use SykesCottages\Qu\Connector\RabbitMQ;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\RabbitMQMessage;
 use Tests\Functional\RabbitMQTestCase;
+use function getenv;
 
 class RabbitMQTest extends RabbitMQTestCase
 {
@@ -15,11 +16,11 @@ class RabbitMQTest extends RabbitMQTestCase
 
     private const DEAD_LETTER_QUEUE_NAME = 'dead_letter';
 
-    public function setUp(): void
+    public function setUp() : void
     {
         $this->rabbitMq = new RabbitMQ(
             getenv('RABBIT_MQ_HOST'),
-            (int)getenv('RABBIT_MQ_PORT'),
+            (int) getenv('RABBIT_MQ_PORT'),
             getenv('RABBIT_MQ_USER'),
             getenv('RABBIT_MQ_PASSWORD')
         );
@@ -27,14 +28,14 @@ class RabbitMQTest extends RabbitMQTestCase
         $this->channel = $this->rabbitMq->channel();
     }
 
-    public function testWeCanConnectToTheRabbitMQServer(): void
+    public function testWeCanConnectToTheRabbitMQServer() : void
     {
         $this->assertTrue(
             $this->rabbitMq->isConnected()
         );
     }
 
-    public function testWeCanAcknowledgeMessageAndDeleteItFromTheQueue(): void
+    public function testWeCanAcknowledgeMessageAndDeleteItFromTheQueue() : void
     {
         $this->addMessageToQueue();
 
@@ -43,7 +44,7 @@ class RabbitMQTest extends RabbitMQTestCase
         $this->assertQueueIsEmpty(self::QUEUE_NAME);
     }
 
-    public function testWeCanRejectAMessageAndSendItToTheDeadLetterQueue(): void
+    public function testWeCanRejectAMessageAndSendItToTheDeadLetterQueue() : void
     {
         $this->addMessageToQueue();
 
@@ -53,27 +54,28 @@ class RabbitMQTest extends RabbitMQTestCase
         $this->assertQueueHasAMessage(self::DEAD_LETTER_QUEUE_NAME);
     }
 
-    public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage(): void
+    public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage() : void
     {
         $this->rabbitMq->setQueueOptions([
-            'blockingConsumer' => false
+            'blockingConsumer' => false,
+            'non-existing-option' => true,
         ]);
 
         $this->addMessageToQueue();
 
         $this->rabbitMq->consume(
             self::QUEUE_NAME,
-            function (Message $message) {
+            function (Message $message) : void {
                 $this->assertFunctionHasBeenCalled();
                 $this->assertInstanceOf(RabbitMQMessage::class, $message);
             },
-            function () {
+            function () : void {
                 $this->assertFunctionIsNotCalled();
             }
         );
     }
 
-    private function addMessageToQueue(): void
+    private function addMessageToQueue() : void
     {
         $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
     }
