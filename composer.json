@@ -1,7 +1,7 @@
 {
   "name": "sykescottages/qu",
   "type": "library",
-  "description": "",
+  "description": "A generic wrapper for queue libraries",
   "license": "MIT",
   "authors": [
     {
