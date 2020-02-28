@@ -62,6 +62,8 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         }
 
         $this->channel->publish_batch();
+
+        $this->channel->confirm_select();
     }
 
     public function consume(string $queue, callable $callback, callable $idleCallback) : void
