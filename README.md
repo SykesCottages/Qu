@@ -10,7 +10,7 @@ This package has been designed to switch out queue providers using a Queue & Con
 RabbitMQ & SQS to seamlessly switch between the two. 
 
 ## Requirements
-* PHP >= 7.2
+* PHP >= 7.3
 
 ## Install
 Install via Composer:
