@@ -42,8 +42,8 @@ class SQS extends SqsClient implements Queue
     public function queueBatch(string $queue, array $messages) : void
     {
         $batchedMessages = [];
-        foreach ($messages as $message) {
-            $batchedMessages[] = $this->wrapMessageInSQSFormat($message);
+        foreach ($messages as $index => $message) {
+            $batchedMessages[] = $this->wrapMessageInSQSFormat($message, $index);
         }
 
         $this->sendMessageBatch([
@@ -114,9 +114,10 @@ class SQS extends SqsClient implements Queue
      *
      * @return string[][]
      */
-    private function wrapMessageInSQSFormat(array $message) : array
+    private function wrapMessageInSQSFormat(array $message, ?int $idIndex = null) : array
     {
         return [
+            'Id' => $idIndex,
             'MessageBody' => json_encode($message),
             'MessageAttributes' => $this->getMessageAttributes($message),
         ];

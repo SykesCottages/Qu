@@ -61,10 +61,12 @@ class RabbitMQTest extends RabbitMQTestCase
 
     public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage() : void
     {
-        $this->rabbitMq->setQueueOptions([
-            'blockingConsumer' => false,
-            'non-existing-option' => true,
-        ]);
+        $this->rabbitMq->setQueueOptions(
+            [
+                'blockingConsumer' => false,
+                'non-existing-option' => true,
+            ]
+        );
 
         $this->addMessageToQueue();
 

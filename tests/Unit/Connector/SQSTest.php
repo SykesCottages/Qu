@@ -24,12 +24,14 @@ class SQSTest extends UnitTestCase
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
-        $this->sqs = new SQS([
-            'service' => 'sqs',
-            'region' => 'elasticmq',
-            'version' => '2012-11-05',
-            'exception_class' => 'Aws\Exception\AwsException',
-        ]);
+        $this->sqs = new SQS(
+            [
+                'service' => 'sqs',
+                'region' => 'elasticmq',
+                'version' => '2012-11-05',
+                'exception_class' => 'Aws\Exception\AwsException',
+            ]
+        );
     }
 
     /**
