@@ -1,10 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SykesCottages\Qu\Message\Contract;
 
 interface Message
 {
-    public function getBody(): ?array;
+    /**
+     * @return string[]|null
+     */
+    public function getBody() : ?array;
 }

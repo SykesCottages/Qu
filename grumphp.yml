@@ -8,7 +8,7 @@ parameters:
     tasks:
         composer: ~
         phpcs:
-            standard: 'PSR2'
+            standard: 'doctrine'
             tab_width: ~
             whitelist_patterns:
                 - /^src/

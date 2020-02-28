@@ -1,42 +1,36 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Connector;
 
 use Mockery;
 use Mockery\Mock;
-use SykesCottages\Qu\Connector\Contract\QueueInterface;
+use SykesCottages\Qu\Connector\Contract\Queue as QueueInterface;
 use SykesCottages\Qu\Connector\Queue;
 use SykesCottages\Qu\Message\Contract\Message;
 use Tests\Unit\UnitTestCase;
 
 class QueueTest extends UnitTestCase
 {
-    private const QUEUE_NAME = "test_queue";
-    /**
-     * @var Mock|QueueInterface
-     */
+    private const QUEUE_NAME = 'test_queue';
+    /** @var Mock|Queue */
     private $queueInterface;
-    /**
-     * @var Queue
-     */
+    /** @var Queue */
     private $queue;
 
-    public function setUp(): void
+    public function setUp() : void
     {
         $this->queueInterface = Mockery::mock(QueueInterface::class);
-        $this->queue = new Queue(
+        $this->queue          = new Queue(
             self::QUEUE_NAME,
             $this->queueInterface
         );
     }
 
-    public function testQueueCanPutMessagesInTheCorrectQueue(): void
+    public function testQueueCanPutMessagesInTheCorrectQueue() : void
     {
-        $message = [
-            'test' => 'example'
-        ];
+        $message = ['test' => 'example'];
 
         $this->queueInterface
             ->shouldReceive('queueMessage')
@@ -47,12 +41,12 @@ class QueueTest extends UnitTestCase
         $this->queue->queueMessage($message);
     }
 
-    public function testQueueCanCallTheCorrectConsumeMethodOnTheCorrectQueue(): void
+    public function testQueueCanCallTheCorrectConsumeMethodOnTheCorrectQueue() : void
     {
-        $callback = function () {
+        $callback = static function () : void {
         };
 
-        $idleCallback = function () {
+        $idleCallback = static function () : void {
         };
 
         $this->queueInterface
@@ -64,7 +58,7 @@ class QueueTest extends UnitTestCase
         $this->queue->consume($callback, $idleCallback);
     }
 
-    public function testQueueCanAcknowledgeMessageInQueue()
+    public function testQueueCanAcknowledgeMessageInQueue() : void
     {
         $message = Mockery::mock(Message::class);
 
@@ -77,10 +71,10 @@ class QueueTest extends UnitTestCase
         $this->queue->acknowledge($message);
     }
 
-    public function testQueueCanRejectMessageInQueue()
+    public function testQueueCanRejectMessageInQueue() : void
     {
-        $message = Mockery::mock(Message::class);
-        $errorMessage = "This is a sample error";
+        $message      = Mockery::mock(Message::class);
+        $errorMessage = 'This is a sample error';
 
         $this->queueInterface
             ->shouldReceive('reject')

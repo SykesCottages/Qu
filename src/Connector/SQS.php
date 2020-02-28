@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace SykesCottages\Qu\Connector;
 
 use Aws\Sqs\SqsClient;
-use SykesCottages\Qu\Connector\Contract\QueueInterface;
-use SykesCottages\Qu\Exception\InvalidMessageTypeException;
+use SykesCottages\Qu\Connector\Contract\Queue;
+use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
+use function json_encode;
 
-class SQS extends SqsClient implements QueueInterface
+class SQS extends SqsClient implements Queue
 {
     private const LONG_POLL_TIME = 20;
 
@@ -18,22 +19,26 @@ class SQS extends SqsClient implements QueueInterface
 
     private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
-    /**
-     * @var array
-     */
+    /** @var string[] */
     private $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
-        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL
+        'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
     ];
 
-    public function queueMessage(string $queue, array $message): void
+    /**
+     * @param string[] $message
+     */
+    public function queueMessage(string $queue, array $message) : void
     {
         $this->sendMessage(
             ['QueueUrl' => $queue] + $this->wrapMessageInSQSFormat($message)
         );
     }
 
+    /**
+     * @param string[] $messages
+     */
     public function queueBatch(string $queue, array $messages) : void
     {
         $batchedMessages = [];
@@ -47,7 +52,7 @@ class SQS extends SqsClient implements QueueInterface
         ]);
     }
 
-    public function consume(string $queue, callable $callback, callable $idleCallback): void
+    public function consume(string $queue, callable $callback, callable $idleCallback) : void
     {
         do {
             $message = $this->receiveMessage([
@@ -58,7 +63,7 @@ class SQS extends SqsClient implements QueueInterface
 
             $messages = $message->get('Messages');
 
-            if (!$messages) {
+            if (! $messages) {
                 $idleCallback();
                 continue;
             }
@@ -69,60 +74,76 @@ class SQS extends SqsClient implements QueueInterface
         } while ($this->queueOptions['blockingConsumer']);
     }
 
-    public function acknowledge(string $queue, Message $message): void
+    public function acknowledge(string $queue, Message $message) : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
         $this->deleteMessage([
             'QueueUrl' => $queue,
-            'ReceiptHandle' => $message->getReceiptHandle()
+            'ReceiptHandle' => $message->getReceiptHandle(),
         ]);
     }
 
-    public function reject(string $queue, Message $message, string $errorMessage = ''): void
+    public function reject(string $queue, Message $message, string $errorMessage = '') : void
     {
         $this->isMessageInTheCorrectFormat($message);
 
         $this->changeMessageVisibility([
             'QueueUrl' => $queue,
             'ReceiptHandle' => $message->getReceiptHandle(),
-            'VisibilityTimeout' => 0
+            'VisibilityTimeout' => 0,
         ]);
     }
 
-    public function setQueueOptions(array $queueOptions): void
+    /**
+     * @param string[] $queueOptions
+     */
+    public function setQueueOptions(array $queueOptions) : void
     {
         foreach ($queueOptions as $option => $value) {
-            if (isset($this->queueOptions[$option])) {
-                $this->queueOptions[$option] = $value;
+            if (! isset($this->queueOptions[$option])) {
+                continue;
             }
+
+            $this->queueOptions[$option] = $value;
         }
     }
 
-    private function wrapMessageInSQSFormat(array $message): array
+    /**
+     * @param string[] $message
+     *
+     * @return string[][]
+     */
+    private function wrapMessageInSQSFormat(array $message) : array
     {
         return [
             'MessageBody' => json_encode($message),
-            'MessageAttributes' => $this->getMessageAttributes($message)
+            'MessageAttributes' => $this->getMessageAttributes($message),
         ];
     }
 
-    private function getMessageAttributes(array $message): array
+    /**
+     * @param string[] $message
+     *
+     * @return string[][]
+     */
+    private function getMessageAttributes(array $message) : array
     {
         $messageAttributes = [];
         foreach ($message as $key => $value) {
             $messageAttributes[$key] = [
                 'DataType' => 'String',
-                'StringValue' => $value
+                'StringValue' => $value,
             ];
         }
+
         return $messageAttributes;
     }
 
-    private function isMessageInTheCorrectFormat(Message $message)
+    private function isMessageInTheCorrectFormat(Message $message) : bool
     {
-        if (!$message instanceof SQSMessage) {
-            throw new InvalidMessageTypeException(SQSMessage::class);
+        if (! $message instanceof SQSMessage) {
+            throw new InvalidMessageType(SQSMessage::class);
         }
 
         return true;
