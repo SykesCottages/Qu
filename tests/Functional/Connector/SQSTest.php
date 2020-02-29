@@ -153,7 +153,7 @@ class SQSTest extends SQSTestCase
         );
     }
 
-    public function testSomething() : void
+    public function testWeCanSendABatchOfMessagesToQueue() : void
     {
         $numberOfMessagesToTestWith = self::NUMBER_OF_MESSAGES_IN_BATCH;
 

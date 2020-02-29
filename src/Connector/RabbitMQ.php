@@ -48,7 +48,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
     }
 
     /**
-     * @param string[] $messages
+     * @param string[][] $messages
      */
     public function queueBatch(string $queue, array $messages) : void
     {
