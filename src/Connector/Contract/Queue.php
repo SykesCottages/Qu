@@ -14,7 +14,7 @@ interface Queue
     public function queueMessage(string $queue, array $message) : void;
 
     /**
-     * @param string[] $messages
+     * @param string[][] $messages
      */
     public function queueBatch(string $queue, array $messages) : void;
 
