@@ -11,8 +11,6 @@
   ],
   "require": {
     "php": ">=7.3",
-    "php-amqplib/php-amqplib": "^2.8",
-    "aws/aws-sdk-php": "^3.69",
     "ext-json": "*"
   },
   "require-dev": {
