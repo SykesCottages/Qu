@@ -107,7 +107,7 @@ class SQS extends SqsClient implements Queue
             if ($key === "message") {
                 continue;   
             }
-            
+
             $messageAttributes[$key] = [
                 'DataType' => 'String',
                 'StringValue' => $value,
