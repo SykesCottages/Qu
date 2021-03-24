@@ -104,7 +104,7 @@ class SQS extends SqsClient implements Queue
     {
         $messageAttributes = [];
         foreach ($message as $key => $value) {
-            if ($key == "message") {
+            if ($key === "message") {
                 continue;   
             }
             
