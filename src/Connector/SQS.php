@@ -27,15 +27,33 @@ class SQS extends SqsClient implements Queue
     ];
 
     /**
+     * @param string $queue
      * @param string[] $message
+     * @param string|null $messageId
+     * @param string|null $duplicationId
      */
-    public function queueMessage(string $queue, array $message) : void
+    public function queueMessage(
+        string $queue,
+        array $message,
+        string $messageId = null,
+        string $duplicationId = null
+    ) : void
     {
-        $this->sendMessage([
+        $message = [
             'QueueUrl' => $queue,
             'MessageBody' => json_encode($message),
-            'MessageAttributes' => $this->getMessageAttributes($message),
-        ]);
+            'MessageAttributes' => $this->getMessageAttributes($message)
+        ];
+
+        if ($messageId) {
+            $message['MessageGroupId'] = $messageId;
+        }
+
+        if ($duplicationId) {
+            $message['MessageDeduplicationId'] = $duplicationId;
+        }
+
+        $this->sendMessage($message);
     }
 
     public function consume(string $queue, callable $callback, callable $idleCallback) : void
