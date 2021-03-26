@@ -11,7 +11,12 @@ interface Queue
     /**
      * @param string[] $message
      */
-    public function queueMessage(string $queue, array $message) : void;
+    public function queueMessage(
+        string $queue,
+        array $message,
+        ?string $messageId = null,
+        ?string $duplicationId = null
+    ) : void;
 
     public function consume(string $queue, callable $callback, callable $idleCallback) : void;
 
