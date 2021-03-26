@@ -34,12 +34,11 @@ class SQS extends SqsClient implements Queue
         array $message,
         ?string $messageId = null,
         ?string $duplicationId = null
-    ) : void
-    {
+    ) : void {
         $message = [
             'QueueUrl' => $queue,
             'MessageBody' => json_encode($message),
-            'MessageAttributes' => $this->getMessageAttributes($message)
+            'MessageAttributes' => $this->getMessageAttributes($message),
         ];
 
         if ($messageId) {
