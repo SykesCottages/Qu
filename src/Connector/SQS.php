@@ -33,7 +33,8 @@ class SQS extends SqsClient implements Queue
         string $queue,
         array $message,
         string $messageId = null,
-        string $duplicationId = null) : void
+        string $duplicationId = null
+    ) : void
     {
         $message = [
             'QueueUrl' => $queue,
