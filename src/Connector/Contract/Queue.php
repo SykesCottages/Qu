@@ -13,6 +13,11 @@ interface Queue
      */
     public function queueMessage(string $queue, array $message) : void;
 
+    /**
+     * @param string[][] $messages
+     */
+    public function queueBatch(string $queue, array $messages) : void;
+
     public function consume(string $queue, callable $callback, callable $idleCallback) : void;
 
     public function acknowledge(string $queue, Message $message) : void;

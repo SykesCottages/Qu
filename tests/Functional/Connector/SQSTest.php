@@ -9,11 +9,10 @@ use SykesCottages\Qu\Connector\SQS;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
 use Tests\Functional\Connector\Stubs\SQSCallable;
-use Tests\Functional\FunctionalTestCase;
-use function current;
+use Tests\Functional\SQSTestCase;
 use function getenv;
 
-class SQSTest extends FunctionalTestCase
+class SQSTest extends SQSTestCase
 {
     private const DEFAULT_NUMBER_OF_URLS = 2;
 
@@ -23,36 +22,35 @@ class SQSTest extends FunctionalTestCase
 
     private const QUEUE_NAME = 'test';
 
-    /** @var SQS */
-    private $sqs;
-    /** @var string */
-    private $testingQueueUrl;
+    private const NUMBER_OF_MESSAGES_IN_BATCH = 10;
 
     public function setUp() : void
     {
-        $this->sqs = new SQS([
-            'service' => 'sqs',
-            'endpoint' => getenv('SQS_ENDPOINT'),
-            'region' => 'elasticmq',
-            'credentials' => [
-                'key' => 'X',
-                'secret' => 'X',
-            ],
-            'version' => '2012-11-05',
-            'exception_class' => 'Aws\Exception\AwsException',
-        ]);
+        $this->sqs = new SQS(
+            [
+                'service' => 'sqs',
+                'endpoint' => getenv('SQS_ENDPOINT'),
+                'region' => 'elasticmq',
+                'credentials' => [
+                    'key' => 'X',
+                    'secret' => 'X',
+                ],
+                'version' => '2012-11-05',
+                'exception_class' => 'Aws\Exception\AwsException',
+            ]
+        );
 
         $this->testingQueueUrl = getenv('SQS_ENDPOINT') . '/queue/' . self::QUEUE_NAME;
 
-        $this->sqs->setQueueOptions([
-            'blockingConsumer' => false,
-            'pollTime' => 0,
-            'non-existing-option' => true,
-        ]);
+        $this->sqs->setQueueOptions(
+            [
+                'blockingConsumer' => false,
+                'pollTime' => 0,
+                'non-existing-option' => true,
+            ]
+        );
 
-        $this->sqs->purgeQueue([
-            'QueueUrl' => $this->testingQueueUrl,
-        ]);
+        $this->purgeQueue();
     }
 
     public function testWeCanConnectToSQSAndReturnAListOfQueueUrls() : void
@@ -68,30 +66,20 @@ class SQSTest extends FunctionalTestCase
     {
         $this->addMessageToQueue();
 
-        $messages = $this->getMessages($this->testingQueueUrl);
+        $this->assertQueueHasAtLeastOneMessageWithAcknowledgement();
 
-        $this->assertCount(1, $messages);
-
-        $this->sqs->acknowledge($this->testingQueueUrl, new SQSMessage(current($messages)));
-
-        $this->assertEmpty($this->getMessages($this->testingQueueUrl));
+        $this->assertQueueIsEmpty();
     }
 
     public function testWeCanRejectAMessageInTheQueue() : void
     {
         $this->addMessageToQueue();
 
-        $messages = $this->getMessages($this->testingQueueUrl);
+        $this->assertQueueHasAtLeastOneMessageAndRejectMessage();
 
-        $this->assertCount(1, $messages);
+        $this->assertQueueIsEmpty();
 
-        $this->sqs->reject($this->testingQueueUrl, new SQSMessage(current($messages)));
-
-        $this->assertEmpty($this->getMessages($this->testingQueueUrl));
-
-        $messages = $this->getMessages($this->testingQueueUrl . '-deadletter');
-
-        $this->assertCount(1, $messages);
+        $this->assertDeadLetterQueueHasAtLeastOneMessage();
     }
 
     public function testWeCanCallTheCallbackFunctionOnConsume() : void
@@ -165,30 +153,16 @@ class SQSTest extends FunctionalTestCase
         );
     }
 
-    private function addMultipleMessagesToQueue(int $messagesToSend) : void
+    public function testWeCanSendABatchOfMessagesToQueue() : void
     {
-        $countOfMessages = 0;
-        while ($countOfMessages < $messagesToSend) {
-            $this->addMessageToQueue();
-            $countOfMessages++;
+        $numberOfMessagesToTestWith = self::NUMBER_OF_MESSAGES_IN_BATCH;
+
+        $this->addMultipleMessagesToQueueAsBatch($numberOfMessagesToTestWith);
+
+        while ($numberOfMessagesToTestWith-- > 0) {
+            $this->assertQueueHasAtLeastOneMessage();
         }
-    }
 
-    private function addMessageToQueue() : void
-    {
-        $this->sqs->queueMessage($this->testingQueueUrl, ['example' => 'test']);
-    }
-
-    /**
-     * @return SQSMessage[]
-     */
-    private function getMessages(string $queueUrl) : array
-    {
-        $message = $this->sqs->receiveMessage([
-            'QueueUrl' => $queueUrl,
-            'WaitTimeSeconds' => 0,
-        ]);
-
-        return $message->get('Messages') ?? [];
+        $this->assertQueueIsEmpty();
     }
 }

@@ -16,6 +16,8 @@ class RabbitMQTest extends RabbitMQTestCase
 
     private const DEAD_LETTER_QUEUE_NAME = 'dead_letter';
 
+    private const NUMBER_OF_MESSAGES_IN_BATCH = 10;
+
     public function setUp() : void
     {
         $this->rabbitMq = new RabbitMQ(
@@ -26,6 +28,9 @@ class RabbitMQTest extends RabbitMQTestCase
         );
 
         $this->channel = $this->rabbitMq->channel();
+
+        $this->cleanUpMessages(self::QUEUE_NAME);
+        $this->cleanUpMessages(self::DEAD_LETTER_QUEUE_NAME);
     }
 
     public function testWeCanConnectToTheRabbitMQServer() : void
@@ -56,10 +61,12 @@ class RabbitMQTest extends RabbitMQTestCase
 
     public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage() : void
     {
-        $this->rabbitMq->setQueueOptions([
-            'blockingConsumer' => false,
-            'non-existing-option' => true,
-        ]);
+        $this->rabbitMq->setQueueOptions(
+            [
+                'blockingConsumer' => false,
+                'non-existing-option' => true,
+            ]
+        );
 
         $this->addMessageToQueue();
 
@@ -75,8 +82,35 @@ class RabbitMQTest extends RabbitMQTestCase
         );
     }
 
+    public function testWeCanBatchMultipleMessagesAndTheyAppearInTheQueue() : void
+    {
+        $numberOfMessagesToTestWith = self::NUMBER_OF_MESSAGES_IN_BATCH;
+
+        $this->addMultipleMessagesToQueueAsBatch($numberOfMessagesToTestWith);
+
+        while ($numberOfMessagesToTestWith-- > 0) {
+            $this->assertQueueHasAMessage(self::QUEUE_NAME);
+        }
+
+        $this->assertQueueIsEmpty(self::QUEUE_NAME);
+    }
+
     private function addMessageToQueue() : void
     {
         $this->rabbitMq->queueMessage(self::QUEUE_NAME, ['example' => 'test']);
+    }
+
+    private function addMultipleMessagesToQueueAsBatch(int $numberOfMessagesInBatch) : void
+    {
+        $messageBatch = [];
+
+        while ($numberOfMessagesInBatch-- > 0) {
+            $messageBatch[] = [
+                'example' => 'test',
+                'number' => $numberOfMessagesInBatch,
+            ];
+        }
+
+        $this->rabbitMq->queueBatch(self::QUEUE_NAME, $messageBatch);
     }
 }

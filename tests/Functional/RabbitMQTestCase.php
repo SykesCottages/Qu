@@ -33,6 +33,7 @@ class RabbitMQTestCase extends FunctionalTestCase
     protected function assertQueueHasAMessage(string $queueName) : void
     {
         $message = $this->channel->basic_get($queueName);
+        $this->channel->basic_ack($message->getDeliveryTag());
         $this->assertInstanceOf(AMQPMessage::class, $message);
     }
 
