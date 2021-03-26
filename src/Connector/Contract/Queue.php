@@ -14,12 +14,7 @@ interface Queue
      * @param string|null $messageId
      * @param string|null $duplicationId
      */
-    public function queueMessage(
-        string $queue,
-        array $message,
-        string $messageId = null,
-        string $duplicationId = null
-    ) : void;
+    public function queueMessage(string $queue, array $message, string $messageId = null, string $duplicationId = null) : void;
 
     public function consume(string $queue, callable $callback, callable $idleCallback) : void;
 
