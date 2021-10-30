@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class UnitTestCase extends TestCase
 {
-    public function tearDown() : void
+    public function tearDown(): void
     {
         $container = Mockery::getContainer();
 

@@ -6,5 +6,5 @@ namespace SykesCottages\Qu\Consumer\Contract;
 
 interface Consumable
 {
-    public function consume(callable $callback, callable $idleCallback) : void;
+    public function consume(callable $callback, callable $idleCallback): void;
 }

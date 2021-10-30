@@ -11,12 +11,12 @@ class SQSMessageTest extends UnitTestCase
 {
     private const RECEIPT_HANDLE = 'this-is-the-receipt-handle';
 
-    /** @var string[] */
-    private $message;
-    /** @var SQSMessage */
-    private $sqsMessage;
+    /** @var array<string>  */
+    private array $message;
 
-    public function setUp() : void
+    private SQSMessage $sqsMessage;
+
+    public function setUp(): void
     {
         $this->message = [
             'Body' => '{"test": "example"}',
@@ -26,19 +26,19 @@ class SQSMessageTest extends UnitTestCase
         $this->sqsMessage = new SQSMessage($this->message);
     }
 
-    public function testTheBodyIsReturnedAsAnAssociativeArray() : void
+    public function testTheBodyIsReturnedAsAnAssociativeArray(): void
     {
         $expectedResult = ['test' => 'example'];
 
         $this->assertSame($expectedResult, $this->sqsMessage->getBody());
     }
 
-    public function testGetReceiptHandleReturnsTheCorrectString() : void
+    public function testGetReceiptHandleReturnsTheCorrectString(): void
     {
         $this->assertSame(self::RECEIPT_HANDLE, $this->sqsMessage->getReceiptHandle());
     }
 
-    public function testRawMessageReturnsTheEntireMessage() : void
+    public function testRawMessageReturnsTheEntireMessage(): void
     {
         $this->assertSame($this->message, $this->sqsMessage->getRawMessage());
     }

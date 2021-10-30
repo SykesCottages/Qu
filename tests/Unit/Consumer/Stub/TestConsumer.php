@@ -9,7 +9,7 @@ use SykesCottages\Qu\Message\Contract\Message;
 
 class TestConsumer extends Consumer
 {
-    public function process(Message $message) : void
+    public function process(Message $message): void
     {
         $message->getBody();
         $this->queue->acknowledge($message);
