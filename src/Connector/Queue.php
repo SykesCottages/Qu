@@ -13,7 +13,7 @@ final class Queue implements Consumable, MessageHandler
 {
     private string $name;
 
-    private Queue $queue;
+    private QueueInterface $queue;
 
     public function __construct(string $name, QueueInterface $queue)
     {

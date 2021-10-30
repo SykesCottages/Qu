@@ -16,7 +16,8 @@ abstract class Consumer
 
     public function __construct(Queue $queue)
     {
-        $this->queue = $queue;
+        $this->queue         = $queue;
+        $this->exitRequested = false;
     }
 
     /**
