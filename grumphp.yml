@@ -1,6 +1,4 @@
 grumphp:
-    git_dir: .
-    bin_dir: vendor/bin
     ascii:
         failed: ~
         succeeded: ~

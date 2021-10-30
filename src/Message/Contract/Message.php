@@ -9,5 +9,5 @@ interface Message
     /**
      * @return string[]|null
      */
-    public function getBody() : ?array;
+    public function getBody(): ?array;
 }

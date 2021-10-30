@@ -20,7 +20,7 @@ class SQSTest extends UnitTestCase
     /** @var SQS */
     private $sqs;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
@@ -35,7 +35,7 @@ class SQSTest extends UnitTestCase
     /**
      * @dataProvider functionDataProvider
      */
-    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName) : void
+    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
     {
         $this->expectException(InvalidMessageType::class);
 
@@ -47,7 +47,7 @@ class SQSTest extends UnitTestCase
     /**
      * @return string[][]
      */
-    public function functionDataProvider() : array
+    public function functionDataProvider(): array
     {
         return [
             'test reject returns the correct exception' => ['reject'],

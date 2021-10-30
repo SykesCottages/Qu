@@ -10,7 +10,7 @@ use function var_dump;
 
 class TestConsumer extends Consumer
 {
-    public function process(Message $message) : void
+    public function process(Message $message): void
     {
         var_dump($message->getBody());
         $this->queue->acknowledge($message);
