@@ -121,7 +121,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
 
     private function connectToChannel() : bool
     {
-        if (! $this->channel) {
+        if (! isset($this->channel)) {
             $this->channel = $this->channel();
         }
 
