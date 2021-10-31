@@ -17,7 +17,8 @@ class SQSTest extends UnitTestCase
 
     /** @var Mock|Message */
     private $genericMessage;
-    private SQS $sqs;
+    /** @var SQS */
+    private $sqs;
 
     public function setUp(): void
     {

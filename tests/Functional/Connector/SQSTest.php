@@ -24,8 +24,10 @@ class SQSTest extends FunctionalTestCase
 
     private const QUEUE_NAME = 'test';
 
-    private SQS $sqs;
-    private string $testingQueueUrl;
+    /** @var SQS */
+    private $sqs;
+    /** @var string */
+    private $testingQueueUrl;
 
     public function setUp(): void
     {

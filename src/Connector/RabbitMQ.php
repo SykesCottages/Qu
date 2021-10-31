@@ -24,10 +24,11 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
 
     private const PREFETCH_COUNT = 1;
 
-    private AMQPChannel $channel;
+    /** @var AMQPChannel */
+    private $channel;
 
     /** @var string[] */
-    private array $queueOptions = [
+    private $queueOptions = [
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
         'prefetchCount' => self::PREFETCH_COUNT,

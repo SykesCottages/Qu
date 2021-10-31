@@ -19,7 +19,8 @@ class RabbitMQTest extends UnitTestCase
 
     /** @var Mock|Message */
     private $genericMessage;
-    private RabbitMQ $rabbitMQ;
+    /** @var RabbitMQ */
+    private $rabbitMQ;
 
     public function setUp(): void
     {

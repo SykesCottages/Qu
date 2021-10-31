@@ -12,9 +12,9 @@ class SQSMessageTest extends UnitTestCase
     private const RECEIPT_HANDLE = 'this-is-the-receipt-handle';
 
     /** @var array<string>  */
-    private array $message;
-
-    private SQSMessage $sqsMessage;
+    private $message;
+    /** @var SQSMessage  */
+    private $sqsMessage;
 
     public function setUp(): void
     {

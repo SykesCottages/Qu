@@ -21,7 +21,8 @@ class ConsumerTest extends UnitTestCase
 
     /** @var TestConsumer|Consumer */
     private $consumer;
-    private Queue $queueConnector;
+    /** @var Queue */
+    private $queueConnector;
     /** @var Mock|Queue */
     private $queueProvider;
 

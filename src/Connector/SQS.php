@@ -21,7 +21,7 @@ class SQS extends SqsClient implements Queue
     private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
     /** @var string[] */
-    private array $queueOptions = [
+    private $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
         'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,

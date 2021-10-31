@@ -11,9 +11,11 @@ use SykesCottages\Qu\Message\RabbitMQMessage;
 
 class RabbitMQTestCase extends FunctionalTestCase
 {
-    protected RabbitMQ $rabbitMq;
+    /** @var RabbitMQ */
+    protected $rabbitMq;
 
-    protected AMQPChannel $channel;
+    /** @var AMQPChannel */
+    protected $channel;
 
     public function tearDown(): void
     {

@@ -11,7 +11,7 @@ use function json_decode;
 class SQSMessage implements Message
 {
     /** @var string[] */
-    private array $message;
+    private $message;
 
     /**
      * @param string[] $message

@@ -16,7 +16,8 @@ class QueueTest extends UnitTestCase
     private const QUEUE_NAME = 'test_queue';
     /** @var Mock|Queue */
     private $queueInterface;
-    private Queue $queue;
+    /** @var Queue */
+    private $queue;
 
     public function setUp(): void
     {

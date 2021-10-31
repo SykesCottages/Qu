@@ -12,8 +12,10 @@ use Tests\Unit\UnitTestCase;
 
 class RabbitMQMessageTest extends UnitTestCase
 {
-    private AMQPMessage $amqpMessage;
-    private RabbitMQMessage $rabbitMqMessage;
+    /** @var AMQPMessage */
+    private $amqpMessage;
+    /** @var RabbitMQMessage */
+    private $rabbitMqMessage;
 
     public function setUp(): void
     {
