@@ -28,7 +28,7 @@
                 "guzzlehttp/promises": "^1.0",
                 "guzzlehttp/psr7": "^1.4.1",
                 "mtdowling/jmespath.php": "^2.5",
-                "php": ">=5.5"
+                "php": ">=8.0"
             },
             "require-dev": {
                 "andrewsville/php-token-reflection": "^1.4",
