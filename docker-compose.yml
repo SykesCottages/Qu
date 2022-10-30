@@ -11,6 +11,15 @@ services:
     ports:
       - 29852:15672
       - 48888:5672
+  php:
+    build:
+      dockerfile: ./docker/php/Dockerfile
+      context: ./
+    environment:
+      IS_DOCKER: 1
+    volumes:
+      - ./:/var/www/html/
+      - ~/.composer/cache:/root/.composer/cache:cached
   wait:
     image: waisbrot/wait
     links:
