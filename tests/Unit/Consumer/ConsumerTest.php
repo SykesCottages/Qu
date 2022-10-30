@@ -12,28 +12,27 @@ use SykesCottages\Qu\Consumer\Consumer;
 use SykesCottages\Qu\Exception\ExitRequested;
 use Tests\Unit\Consumer\Stub\TestConsumer;
 use Tests\Unit\UnitTestCase;
+
 use function sprintf;
 
 class ConsumerTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
-    /** @var TestConsumer|Consumer */
-    private $consumer;
-    /** @var Queue */
-    private $queueConnector;
-    /** @var Mock|Queue */
+    private TestConsumer|Consumer $consumer;
+
+    private Queue $queueConnector;
+
     private $queueProvider;
 
-    public function setUp() : void
+    public function setUp(): void
     {
-        $this->queueProvider = Mockery::mock(QueueInterface::class);
-
+        $this->queueProvider  = Mockery::mock(QueueInterface::class);
         $this->queueConnector = new Queue(self::QUEUE_NAME, $this->queueProvider);
         $this->consumer       = new TestConsumer($this->queueConnector);
     }
 
-    public function testConsumerIsStartedOnTheCorrectQueueObject() : void
+    public function testConsumerIsStartedOnTheCorrectQueueObject(): void
     {
         $this->queueProvider
             ->shouldReceive('consume')
@@ -44,7 +43,7 @@ class ConsumerTest extends UnitTestCase
         $this->consumer->start();
     }
 
-    public function testExceptionIsThrownIfItHasBeenRequested() : void
+    public function testExceptionIsThrownIfItHasBeenRequested(): void
     {
         $this->expectExceptionMessage(
             sprintf('Exit has been requested for the queue: %s', self::QUEUE_NAME)
@@ -56,7 +55,7 @@ class ConsumerTest extends UnitTestCase
         $this->consumer->idle();
     }
 
-    public function testExceptionIsNotThrownWhenItHasNotBeenRequested() : void
+    public function testExceptionIsNotThrownWhenItHasNotBeenRequested(): void
     {
         $this->assertNull(
             $this->consumer->idle()

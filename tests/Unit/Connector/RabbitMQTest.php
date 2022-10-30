@@ -10,18 +10,18 @@ use SykesCottages\Qu\Connector\RabbitMQ;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use Tests\Unit\UnitTestCase;
+
 use function getenv;
 
 class RabbitMQTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
-    /** @var Mock|Message */
-    private $genericMessage;
-    /** @var RabbitMQ */
-    private $rabbitMQ;
+    private Mock $genericMessage;
 
-    public function setUp() : void
+    private RabbitMQ $rabbitMQ;
+
+    public function setUp(): void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
@@ -29,14 +29,12 @@ class RabbitMQTest extends UnitTestCase
             getenv('RABBIT_MQ_HOST'),
             (int) getenv('RABBIT_MQ_PORT'),
             getenv('RABBIT_MQ_USER'),
-            getenv('RABBIT_MQ_PASSWORD')
+            getenv('RABBIT_MQ_PASSWORD'),
         );
     }
 
-    /**
-     * @dataProvider functionDataProvider
-     */
-    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName) : void
+    /** @dataProvider functionDataProvider */
+    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
     {
         $this->expectException(InvalidMessageType::class);
 
@@ -45,10 +43,8 @@ class RabbitMQTest extends UnitTestCase
         $this->rabbitMQ->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
     }
 
-    /**
-     * @return string[][]
-     */
-    public function functionDataProvider() : array
+    /** @return string[][] */
+    public function functionDataProvider(): array
     {
         return [
             'test reject returns the correct exception' => ['reject'],

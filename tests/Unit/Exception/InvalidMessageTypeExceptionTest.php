@@ -10,7 +10,7 @@ use Tests\Unit\UnitTestCase;
 
 class InvalidMessageTypeExceptionTest extends UnitTestCase
 {
-    public function testExceptionMatchesLogicExceptionClass() : void
+    public function testExceptionMatchesLogicExceptionClass(): void
     {
         $exception = new InvalidMessageType(
             self::class
@@ -19,9 +19,7 @@ class InvalidMessageTypeExceptionTest extends UnitTestCase
         $this->assertInstanceOf(LogicException::class, $exception);
     }
 
-    /**
-     * @dataProvider classMessageDataProvider
-     */
+    /** @dataProvider classMessageDataProvider */
     public function testExceptionProducesCorrectMessageBasedOnClassName(
         string $className,
         string $expectedResult
@@ -30,9 +28,7 @@ class InvalidMessageTypeExceptionTest extends UnitTestCase
         $this->assertSame($expectedResult, $exception->getMessage());
     }
 
-    /**
-     * @return string[][]
-     */
+    /** @return string[][] */
     public function classMessageDataProvider() : array
     {
         return [

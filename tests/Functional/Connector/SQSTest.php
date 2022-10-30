@@ -10,6 +10,7 @@ use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
 use Tests\Functional\Connector\Stubs\SQSCallable;
 use Tests\Functional\FunctionalTestCase;
+
 use function current;
 use function getenv;
 
@@ -23,10 +24,9 @@ class SQSTest extends FunctionalTestCase
 
     private const QUEUE_NAME = 'test';
 
-    /** @var SQS */
-    private $sqs;
-    /** @var string */
-    private $testingQueueUrl;
+    private SQS $sqs;
+
+    private string $testingQueueUrl;
 
     public function setUp() : void
     {
@@ -55,7 +55,7 @@ class SQSTest extends FunctionalTestCase
         ]);
     }
 
-    public function testWeCanConnectToSQSAndReturnAListOfQueueUrls() : void
+    public function testWeCanConnectToSQSAndReturnAListOfQueueUrls(): void
     {
         $activeQueues = $this->sqs->listQueues();
 
@@ -64,7 +64,7 @@ class SQSTest extends FunctionalTestCase
         $this->assertCount(self::DEFAULT_NUMBER_OF_URLS, $urls);
     }
 
-    public function testWeCanAcknowledgeAMessageInTheQueue() : void
+    public function testWeCanAcknowledgeAMessageInTheQueue(): void
     {
         $this->addMessageToQueue();
 
@@ -77,7 +77,7 @@ class SQSTest extends FunctionalTestCase
         $this->assertEmpty($this->getMessages($this->testingQueueUrl));
     }
 
-    public function testWeCanRejectAMessageInTheQueue() : void
+    public function testWeCanRejectAMessageInTheQueue(): void
     {
         $this->addMessageToQueue();
 
@@ -94,7 +94,7 @@ class SQSTest extends FunctionalTestCase
         $this->assertCount(1, $messages);
     }
 
-    public function testWeCanCallTheCallbackFunctionOnConsume() : void
+    public function testWeCanCallTheCallbackFunctionOnConsume(): void
     {
         $this->addMessageToQueue();
 
@@ -110,7 +110,7 @@ class SQSTest extends FunctionalTestCase
         );
     }
 
-    public function testWeCanCallTheIdleCallbackFunctionOnConsume() : void
+    public function testWeCanCallTheIdleCallbackFunctionOnConsume(): void
     {
         $this->sqs->consume(
             $this->testingQueueUrl,
@@ -123,10 +123,8 @@ class SQSTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @return int[][]
-     */
-    public function retrieveMinAndMaxDataProvider() : array
+    /** @return int[][] */
+    public function retrieveMinAndMaxDataProvider(): array
     {
         return [
             'Test if we specify more than the MAX it will cap to the MAX value allowed by SQS' => [
@@ -140,9 +138,7 @@ class SQSTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @dataProvider retrieveMinAndMaxDataProvider
-     */
+    /** @dataProvider retrieveMinAndMaxDataProvider */
     public function testWeCanOnlyRetrieveMessagesBetweenTheMaxAndMin(
         int $numberOfMessagesToConsumeAtATime,
         int $expectedNumberOfCallbackCalls
@@ -165,7 +161,7 @@ class SQSTest extends FunctionalTestCase
         );
     }
 
-    private function addMultipleMessagesToQueue(int $messagesToSend) : void
+    private function addMultipleMessagesToQueue(int $messagesToSend): void
     {
         $countOfMessages = 0;
         while ($countOfMessages < $messagesToSend) {
@@ -174,7 +170,7 @@ class SQSTest extends FunctionalTestCase
         }
     }
 
-    private function addMessageToQueue() : void
+    private function addMessageToQueue(): void
     {
         $this->sqs->queueMessage($this->testingQueueUrl, ['example' => 'test']);
     }
@@ -182,7 +178,7 @@ class SQSTest extends FunctionalTestCase
     /**
      * @return SQSMessage[]
      */
-    private function getMessages(string $queueUrl) : array
+    private function getMessages(string $queueUrl): array
     {
         $message = $this->sqs->receiveMessage([
             'QueueUrl' => $queueUrl,

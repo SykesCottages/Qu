@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SykesCottages\Qu\Exception;
 
 use LogicException;
+
 use function sprintf;
 
 class InvalidMessageType extends LogicException

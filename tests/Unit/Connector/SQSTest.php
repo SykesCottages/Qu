@@ -15,12 +15,10 @@ class SQSTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test';
 
-    /** @var Mock|Message */
-    private $genericMessage;
-    /** @var SQS */
-    private $sqs;
+    private Mock $genericMessage;
+    private SQS $sqs;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->genericMessage = Mockery::mock(Message::class);
 
@@ -32,10 +30,8 @@ class SQSTest extends UnitTestCase
         ]);
     }
 
-    /**
-     * @dataProvider functionDataProvider
-     */
-    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName) : void
+    /** @dataProvider functionDataProvider */
+    public function testExceptionIsThrownWhenInvalidMessageIsPassed(string $functionName): void
     {
         $this->expectException(InvalidMessageType::class);
 
@@ -44,10 +40,8 @@ class SQSTest extends UnitTestCase
         $this->sqs->{$functionName}(self::QUEUE_NAME, $this->genericMessage);
     }
 
-    /**
-     * @return string[][]
-     */
-    public function functionDataProvider() : array
+    /** @return string[][] */
+    public function functionDataProvider(): array
     {
         return [
             'test reject returns the correct exception' => ['reject'],
