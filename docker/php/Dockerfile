@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:8.0-fpm
 
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/00no-pipeline
 ENV TZ=Europe/London
@@ -20,6 +20,6 @@ RUN apt-get update && \
 
 RUN docker-php-ext-install mysqli xml curl mbstring pdo_mysql gd zip soap bcmath sockets
 
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY docker/php/config/php.ini /usr/local/etc/php
