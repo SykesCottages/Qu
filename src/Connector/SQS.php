@@ -27,16 +27,12 @@ class SQS extends SqsClient implements Queue
         'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
     ];
 
-    /**
-     * @param string[] $message
-     * @param string|null $messageId
-     * @param string|null $duplicationId
-     */
+    /** @param string[] $message */
     public function queueMessage(
         string $queue,
         array $message,
-        string $messageId = null,
-        string $duplicationId = null,
+        string|null $messageId = null,
+        string|null $duplicationId = null,
     ): void {
         $message = [
             'QueueUrl' => $queue,

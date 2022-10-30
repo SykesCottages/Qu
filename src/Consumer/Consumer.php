@@ -12,11 +12,8 @@ abstract class Consumer
 {
     protected bool $exitRequested;
 
-    protected Queue $queue;
-
-    public function __construct(Queue $queue)
+    public function __construct(protected Queue $queue)
     {
-        $this->queue = $queue;
     }
 
     /**

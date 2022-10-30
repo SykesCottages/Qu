@@ -10,12 +10,9 @@ use function json_decode;
 
 class SQSMessage implements Message
 {
-    private array $message;
-
     /** @param string[] $message */
-    public function __construct(array $message)
+    public function __construct(private array $message)
     {
-        $this->message = $message;
     }
 
     /** @return string[] */

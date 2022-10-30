@@ -8,16 +8,12 @@ use SykesCottages\Qu\Message\Contract\Message;
 
 interface Queue
 {
-    /**
-     * @param string[] $message
-     * @param string|null $messageId
-     * @param string|null $duplicationId
-     */
+    /** @param string[] $message */
     public function queueMessage(
         string $queue,
         array $message,
-        string $messageId = null,
-        string $duplicationId = null,
+        string|null $messageId = null,
+        string|null $duplicationId = null,
     ): void;
 
     public function consume(string $queue, callable $callback, callable $idleCallback): void;

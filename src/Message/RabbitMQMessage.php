@@ -12,11 +12,8 @@ use function json_decode;
 
 class RabbitMQMessage implements Message
 {
-    private AMQPMessage $message;
-
-    public function __construct(AMQPMessage $message)
+    public function __construct(private AMQPMessage $message)
     {
-        $this->message = $message;
     }
 
     /** @return array */

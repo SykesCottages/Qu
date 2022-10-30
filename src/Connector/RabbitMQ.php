@@ -34,16 +34,12 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         'consumerTag' => self::CONSUMER_TAG,
     ];
 
-    /**
-     * @param string[] $message
-     * @param string|null $messageId
-     * @param string|null $duplicationId
-     */
+    /** @param string[] $message */
     public function queueMessage(
         string $queue,
         array $message,
-        string $messageId = null,
-        string $duplicationId = null,
+        string|null $messageId = null,
+        string|null $duplicationId = null,
     ): void {
         $this->connectToChannel();
 
