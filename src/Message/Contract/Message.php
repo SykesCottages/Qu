@@ -6,6 +6,6 @@ namespace SykesCottages\Qu\Message\Contract;
 
 interface Message
 {
-    /** @return string[]|null */
-    public function getBody(): ?array;
+    /** @return array */
+    public function getBody(): array;
 }

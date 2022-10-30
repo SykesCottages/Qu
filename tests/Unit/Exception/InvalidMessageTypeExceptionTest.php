@@ -12,9 +12,7 @@ class InvalidMessageTypeExceptionTest extends UnitTestCase
 {
     public function testExceptionMatchesLogicExceptionClass(): void
     {
-        $exception = new InvalidMessageType(
-            self::class
-        );
+        $exception = new InvalidMessageType(self::class);
 
         $this->assertInstanceOf(LogicException::class, $exception);
     }
@@ -22,14 +20,14 @@ class InvalidMessageTypeExceptionTest extends UnitTestCase
     /** @dataProvider classMessageDataProvider */
     public function testExceptionProducesCorrectMessageBasedOnClassName(
         string $className,
-        string $expectedResult
-    ) : void {
+        string $expectedResult,
+    ): void {
         $exception = new InvalidMessageType($className);
         $this->assertSame($expectedResult, $exception->getMessage());
     }
 
     /** @return string[][] */
-    public function classMessageDataProvider() : array
+    public function classMessageDataProvider(): array
     {
         return [
             'Test when class name is passed the full path is returned in the error message' => [

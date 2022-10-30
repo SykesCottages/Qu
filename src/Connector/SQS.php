@@ -29,12 +29,14 @@ class SQS extends SqsClient implements Queue
 
     /**
      * @param string[] $message
+     * @param string|null $messageId
+     * @param string|null $duplicationId
      */
     public function queueMessage(
         string $queue,
         array $message,
-        ?string $messageId = null,
-        ?string $duplicationId = null,
+        string $messageId = null,
+        string $duplicationId = null,
     ): void {
         $message = [
             'QueueUrl' => $queue,
@@ -96,9 +98,7 @@ class SQS extends SqsClient implements Queue
         ]);
     }
 
-    /**
-     * @param string[] $queueOptions
-     */
+    /** @param string[] $queueOptions */
     public function setQueueOptions(array $queueOptions): void
     {
         foreach ($queueOptions as $option => $value) {

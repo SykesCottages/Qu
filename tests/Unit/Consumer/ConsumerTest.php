@@ -23,7 +23,7 @@ class ConsumerTest extends UnitTestCase
 
     private Queue $queueConnector;
 
-    private $queueProvider;
+    private Mock $queueProvider;
 
     public function setUp(): void
     {
@@ -46,7 +46,7 @@ class ConsumerTest extends UnitTestCase
     public function testExceptionIsThrownIfItHasBeenRequested(): void
     {
         $this->expectExceptionMessage(
-            sprintf('Exit has been requested for the queue: %s', self::QUEUE_NAME)
+            sprintf('Exit has been requested for the queue: %s', self::QUEUE_NAME),
         );
 
         $this->expectException(ExitRequested::class);
@@ -57,8 +57,6 @@ class ConsumerTest extends UnitTestCase
 
     public function testExceptionIsNotThrownWhenItHasNotBeenRequested(): void
     {
-        $this->assertNull(
-            $this->consumer->idle()
-        );
+        $this->assertNull($this->consumer->idle());
     }
 }

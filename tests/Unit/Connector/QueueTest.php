@@ -43,10 +43,10 @@ class QueueTest extends UnitTestCase
 
     public function testQueueCanCallTheCorrectConsumeMethodOnTheCorrectQueue(): void
     {
-        $callback = static function () : void {
+        $callback = static function (): void {
         };
 
-        $idleCallback = static function () : void {
+        $idleCallback = static function (): void {
         };
 
         $this->queueInterface

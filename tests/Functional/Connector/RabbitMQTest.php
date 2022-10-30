@@ -31,9 +31,7 @@ class RabbitMQTest extends RabbitMQTestCase
 
     public function testWeCanConnectToTheRabbitMQServer(): void
     {
-        $this->assertTrue(
-            $this->rabbitMq->isConnected()
-        );
+        $this->assertTrue($this->rabbitMq->isConnected());
     }
 
     public function testWeCanAcknowledgeMessageAndDeleteItFromTheQueue(): void
@@ -55,7 +53,7 @@ class RabbitMQTest extends RabbitMQTestCase
         $this->assertQueueHasAMessage(self::DEAD_LETTER_QUEUE_NAME);
     }
 
-    public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage() : void
+    public function testWeCanCallTheCallbackFunctionWhenWeHaveAMessage(): void
     {
         $this->rabbitMq->setQueueOptions([
             'blockingConsumer' => false,
@@ -66,13 +64,13 @@ class RabbitMQTest extends RabbitMQTestCase
 
         $this->rabbitMq->consume(
             self::QUEUE_NAME,
-            function (Message $message) : void {
+            function (Message $message): void {
                 $this->assertFunctionHasBeenCalled();
                 $this->assertInstanceOf(RabbitMQMessage::class, $message);
             },
-            function () : void {
+            function (): void {
                 $this->assertFunctionIsNotCalled();
-            }
+            },
         );
     }
 

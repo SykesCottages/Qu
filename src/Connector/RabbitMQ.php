@@ -36,6 +36,8 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
 
     /**
      * @param string[] $message
+     * @param string|null $messageId
+     * @param string|null $duplicationId
      */
     public function queueMessage(
         string $queue,
@@ -47,7 +49,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
 
         $this->channel->basic_publish(
             new AMQPMessage(json_encode($message)),
-            $queue
+            $queue,
         );
     }
 
@@ -58,7 +60,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         $this->channel->basic_qos(
             $this->queueOptions['prefetchSize'],
             $this->queueOptions['prefetchCount'],
-            self::DEFAULT_IS_GLOBAL
+            self::DEFAULT_IS_GLOBAL,
         );
 
         $this->channel->basic_consume(
@@ -70,7 +72,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
             false,
             static function (AMQPMessage $message) use ($callback): void {
                 $callback(new RabbitMQMessage($message));
-            }
+            },
         );
 
         do {
@@ -96,9 +98,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
             ->basic_nack($message->getDeliveryTag());
     }
 
-    /**
-     * @param string[] $queueOptions
-     */
+    /** @param string[] $queueOptions */
     public function setQueueOptions(array $queueOptions): void
     {
         foreach ($queueOptions as $option => $value) {

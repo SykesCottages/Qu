@@ -10,7 +10,6 @@ use function sprintf;
 
 class ExitRequested extends Exception
 {
-    /** @var  */
     protected $message = 'Exit has been requested for the queue: %s';
 
     public function __construct(string $queueName)

@@ -28,7 +28,7 @@ class SQSTest extends FunctionalTestCase
 
     private string $testingQueueUrl;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->sqs = new SQS([
             'service' => 'sqs',
@@ -100,13 +100,13 @@ class SQSTest extends FunctionalTestCase
 
         $this->sqs->consume(
             $this->testingQueueUrl,
-            function (Message $message) : void {
+            function (Message $message): void {
                 $this->assertFunctionHasBeenCalled();
                 $this->assertInstanceOf(SQSMessage::class, $message);
             },
-            function () : void {
+            function (): void {
                 $this->assertFunctionIsNotCalled();
-            }
+            },
         );
     }
 
@@ -114,12 +114,12 @@ class SQSTest extends FunctionalTestCase
     {
         $this->sqs->consume(
             $this->testingQueueUrl,
-            function (Message $message) : void {
+            function (Message $message): void {
                 $this->assertFunctionIsNotCalled();
             },
-            function () : void {
+            function (): void {
                 $this->assertFunctionHasBeenCalled();
-            }
+            },
         );
     }
 
@@ -141,8 +141,8 @@ class SQSTest extends FunctionalTestCase
     /** @dataProvider retrieveMinAndMaxDataProvider */
     public function testWeCanOnlyRetrieveMessagesBetweenTheMaxAndMin(
         int $numberOfMessagesToConsumeAtATime,
-        int $expectedNumberOfCallbackCalls
-    ) : void {
+        int $expectedNumberOfCallbackCalls,
+    ): void {
         $this->addMultipleMessagesToQueue(100);
 
         $this->sqs->setQueueOptions(['maxNumberOfMessagesPerConsume' => $numberOfMessagesToConsumeAtATime]);
@@ -155,9 +155,9 @@ class SQSTest extends FunctionalTestCase
         $this->sqs->consume(
             $this->testingQueueUrl,
             $mock,
-            function () : void {
+            function (): void {
                 $this->assertFunctionIsNotCalled();
-            }
+            },
         );
     }
 
@@ -175,9 +175,7 @@ class SQSTest extends FunctionalTestCase
         $this->sqs->queueMessage($this->testingQueueUrl, ['example' => 'test']);
     }
 
-    /**
-     * @return SQSMessage[]
-     */
+    /** @return SQSMessage[] */
     private function getMessages(string $queueUrl): array
     {
         $message = $this->sqs->receiveMessage([
