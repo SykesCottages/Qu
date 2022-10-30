@@ -10,10 +10,12 @@ use function json_decode;
 
 class SQSMessage implements Message
 {
+    // @codingStandardsIgnoreStart
     /** @param string[] $message */
     public function __construct(private array $message)
     {
     }
+    // @codingStandardsIgnoreEnd
 
     /** @return string[] */
     public function getBody(): array

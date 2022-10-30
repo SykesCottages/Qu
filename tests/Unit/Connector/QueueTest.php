@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Connector;
 
 use Mockery;
-use Mockery\Mock;
+use Mockery\MockInterface;
 use SykesCottages\Qu\Connector\Contract\Queue as QueueInterface;
 use SykesCottages\Qu\Connector\Queue;
 use SykesCottages\Qu\Message\Contract\Message;
@@ -15,7 +15,7 @@ class QueueTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test_queue';
 
-    private Mock $queueInterface;
+    private MockInterface $queueInterface;
 
     private Queue $queue;
 

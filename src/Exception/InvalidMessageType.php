@@ -8,8 +8,10 @@ use LogicException;
 
 use function sprintf;
 
+// phpcs:ignoreFile
 class InvalidMessageType extends LogicException
 {
+    /** @var string */
     protected $message = 'Message is not the correct type: %s';
 
     public function __construct(string $messageType)

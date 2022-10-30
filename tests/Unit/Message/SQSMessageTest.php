@@ -11,7 +11,9 @@ class SQSMessageTest extends UnitTestCase
 {
     private const RECEIPT_HANDLE = 'this-is-the-receipt-handle';
 
+    //@codingStandardsIgnoreStart
     private array $message;
+    //@codingStandardsIgnoreEnd
 
     private SQSMessage $sqsMessage;
 

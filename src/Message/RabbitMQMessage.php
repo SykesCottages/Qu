@@ -16,10 +16,12 @@ class RabbitMQMessage implements Message
     {
     }
 
-    /** @return array */
+    // @codingStandardsIgnoreStart
+    /** @return mixed array */
     public function getBody(): array
     {
         return json_decode($this->message->getBody(), true);
+        //@codingStandardsIgnoreEnd
     }
 
     public function getDeliveryInfoChannel(): AMQPChannel
