@@ -20,8 +20,11 @@ class QueueTest extends UnitTestCase
     private $queueInterface;
     // @codingStandardsIgnoreEnd
 
+    // @codingStandardsIgnoreStart
     private Queue $queue;
+    // @codingStandardsIgnoreEnd
 
+    /** This method is called before each test. */
     public function setUp(): void
     {
         $this->queueInterface = Mockery::mock(QueueInterface::class);
