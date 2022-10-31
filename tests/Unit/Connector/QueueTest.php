@@ -21,7 +21,8 @@ class QueueTest extends UnitTestCase
     // @codingStandardsIgnoreEnd
 
     // @codingStandardsIgnoreStart
-    private Queue $queue;
+    /** @var Queue */
+    private $queue;
     // @codingStandardsIgnoreEnd
 
     /** This method is called before each test. */
