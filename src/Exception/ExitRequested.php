@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace SykesCottages\Qu\Exception;
 
 use Exception;
+
 use function sprintf;
 
+// phpcs:ignoreFile
 class ExitRequested extends Exception
 {
     /** @var string */

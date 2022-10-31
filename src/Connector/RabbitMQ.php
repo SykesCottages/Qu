@@ -11,6 +11,7 @@ use SykesCottages\Qu\Connector\Contract\Queue;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\RabbitMQMessage;
+
 use function json_encode;
 
 class RabbitMQ extends AMQPLazyConnection implements Queue
@@ -23,42 +24,39 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
 
     private const PREFETCH_COUNT = 1;
 
-    /** @var AMQPChannel */
-    private $channel;
+    private AMQPChannel $channel;
 
     /** @var string[] */
-    private $queueOptions = [
+    private array $queueOptions = [
         'blockingConsumer' => true,
         'prefetchSize' => self::DEFAULT_PREFETCH_SIZE,
         'prefetchCount' => self::PREFETCH_COUNT,
         'consumerTag' => self::CONSUMER_TAG,
     ];
 
-    /**
-     * @param string[] $message
-     */
+    /** @param string[] $message */
     public function queueMessage(
         string $queue,
         array $message,
-        ?string $messageId = null,
-        ?string $duplicationId = null
-    ) : void {
+        string|null $messageId = null,
+        string|null $duplicationId = null,
+    ): void {
         $this->connectToChannel();
 
         $this->channel->basic_publish(
             new AMQPMessage(json_encode($message)),
-            $queue
+            $queue,
         );
     }
 
-    public function consume(string $queue, callable $callback, callable $idleCallback) : void
+    public function consume(string $queue, callable $callback, callable $idleCallback): void
     {
         $this->connectToChannel();
 
         $this->channel->basic_qos(
             $this->queueOptions['prefetchSize'],
             $this->queueOptions['prefetchCount'],
-            self::DEFAULT_IS_GLOBAL
+            self::DEFAULT_IS_GLOBAL,
         );
 
         $this->channel->basic_consume(
@@ -68,9 +66,9 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
             false,
             false,
             false,
-            static function (AMQPMessage $message) use ($callback) : void {
+            static function (AMQPMessage $message) use ($callback): void {
                 $callback(new RabbitMQMessage($message));
-            }
+            },
         );
 
         do {
@@ -78,7 +76,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         } while ($this->queueOptions['blockingConsumer']);
     }
 
-    public function acknowledge(string $queue, Message $message) : void
+    public function acknowledge(string $queue, Message $message): void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -87,7 +85,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
             ->basic_ack($message->getDeliveryTag());
     }
 
-    public function reject(string $queue, Message $message, string $errorMessage = '') : void
+    public function reject(string $queue, Message $message, string $errorMessage = ''): void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -96,10 +94,8 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
             ->basic_nack($message->getDeliveryTag());
     }
 
-    /**
-     * @param string[] $queueOptions
-     */
-    public function setQueueOptions(array $queueOptions) : void
+    /** @param string[] $queueOptions */
+    public function setQueueOptions(array $queueOptions): void
     {
         foreach ($queueOptions as $option => $value) {
             if (! isset($this->queueOptions[$option])) {
@@ -110,7 +106,7 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         }
     }
 
-    private function isMessageInTheCorrectFormat(Message $message) : bool
+    private function isMessageInTheCorrectFormat(Message $message): bool
     {
         if (! $message instanceof RabbitMQMessage) {
             throw new InvalidMessageType(RabbitMQMessage::class);
@@ -119,11 +115,9 @@ class RabbitMQ extends AMQPLazyConnection implements Queue
         return true;
     }
 
-    private function connectToChannel() : bool
+    private function connectToChannel(): bool
     {
-        if (! $this->channel) {
-            $this->channel = $this->channel();
-        }
+        $this->channel = $this->channel();
 
         return $this->isConnected();
     }

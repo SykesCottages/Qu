@@ -14,21 +14,28 @@ use Tests\Unit\UnitTestCase;
 class QueueTest extends UnitTestCase
 {
     private const QUEUE_NAME = 'test_queue';
+
+    // @codingStandardsIgnoreStart
     /** @var Mock|Queue */
     private $queueInterface;
+    // @codingStandardsIgnoreEnd
+
+    // @codingStandardsIgnoreStart
     /** @var Queue */
     private $queue;
+    // @codingStandardsIgnoreEnd
 
-    public function setUp() : void
+    /** This method is called before each test. */
+    public function setUp(): void
     {
         $this->queueInterface = Mockery::mock(QueueInterface::class);
         $this->queue          = new Queue(
             self::QUEUE_NAME,
-            $this->queueInterface
+            $this->queueInterface,
         );
     }
 
-    public function testQueueCanPutMessagesInTheCorrectQueue() : void
+    public function testQueueCanPutMessagesInTheCorrectQueue(): void
     {
         $message = ['test' => 'example'];
 
@@ -41,12 +48,12 @@ class QueueTest extends UnitTestCase
         $this->queue->queueMessage($message);
     }
 
-    public function testQueueCanCallTheCorrectConsumeMethodOnTheCorrectQueue() : void
+    public function testQueueCanCallTheCorrectConsumeMethodOnTheCorrectQueue(): void
     {
-        $callback = static function () : void {
+        $callback = static function (): void {
         };
 
-        $idleCallback = static function () : void {
+        $idleCallback = static function (): void {
         };
 
         $this->queueInterface
@@ -58,7 +65,7 @@ class QueueTest extends UnitTestCase
         $this->queue->consume($callback, $idleCallback);
     }
 
-    public function testQueueCanAcknowledgeMessageInQueue() : void
+    public function testQueueCanAcknowledgeMessageInQueue(): void
     {
         $message = Mockery::mock(Message::class);
 
@@ -71,7 +78,7 @@ class QueueTest extends UnitTestCase
         $this->queue->acknowledge($message);
     }
 
-    public function testQueueCanRejectMessageInQueue() : void
+    public function testQueueCanRejectMessageInQueue(): void
     {
         $message      = Mockery::mock(Message::class);
         $errorMessage = 'This is a sample error';

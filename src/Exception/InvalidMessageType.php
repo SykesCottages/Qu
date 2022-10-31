@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace SykesCottages\Qu\Exception;
 
 use LogicException;
+
 use function sprintf;
 
+// phpcs:ignoreFile
 class InvalidMessageType extends LogicException
 {
     /** @var string */

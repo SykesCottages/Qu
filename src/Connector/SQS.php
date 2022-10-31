@@ -9,6 +9,7 @@ use SykesCottages\Qu\Connector\Contract\Queue;
 use SykesCottages\Qu\Exception\InvalidMessageType;
 use SykesCottages\Qu\Message\Contract\Message;
 use SykesCottages\Qu\Message\SQSMessage;
+
 use function json_encode;
 
 class SQS extends SqsClient implements Queue
@@ -20,21 +21,19 @@ class SQS extends SqsClient implements Queue
     private const MIN_NUMBER_OF_MESSAGES_PER_POLL = 1;
 
     /** @var string[] */
-    private $queueOptions = [
+    private array $queueOptions = [
         'blockingConsumer' => true,
         'pollTime' => self::LONG_POLL_TIME,
         'maxNumberOfMessagesPerConsume' => self::MIN_NUMBER_OF_MESSAGES_PER_POLL,
     ];
 
-    /**
-     * @param string[] $message
-     */
+    /** @param string[] $message */
     public function queueMessage(
         string $queue,
         array $message,
-        ?string $messageId = null,
-        ?string $duplicationId = null
-    ) : void {
+        string|null $messageId = null,
+        string|null $duplicationId = null,
+    ): void {
         $message = [
             'QueueUrl' => $queue,
             'MessageBody' => json_encode($message),
@@ -52,7 +51,7 @@ class SQS extends SqsClient implements Queue
         $this->sendMessage($message);
     }
 
-    public function consume(string $queue, callable $callback, callable $idleCallback) : void
+    public function consume(string $queue, callable $callback, callable $idleCallback): void
     {
         do {
             $message = $this->receiveMessage([
@@ -74,7 +73,7 @@ class SQS extends SqsClient implements Queue
         } while ($this->queueOptions['blockingConsumer']);
     }
 
-    public function acknowledge(string $queue, Message $message) : void
+    public function acknowledge(string $queue, Message $message): void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -84,7 +83,7 @@ class SQS extends SqsClient implements Queue
         ]);
     }
 
-    public function reject(string $queue, Message $message, string $errorMessage = '') : void
+    public function reject(string $queue, Message $message, string $errorMessage = ''): void
     {
         $this->isMessageInTheCorrectFormat($message);
 
@@ -95,10 +94,8 @@ class SQS extends SqsClient implements Queue
         ]);
     }
 
-    /**
-     * @param string[] $queueOptions
-     */
-    public function setQueueOptions(array $queueOptions) : void
+    /** @param string[] $queueOptions */
+    public function setQueueOptions(array $queueOptions): void
     {
         foreach ($queueOptions as $option => $value) {
             if (! isset($this->queueOptions[$option])) {
@@ -114,7 +111,7 @@ class SQS extends SqsClient implements Queue
      *
      * @return string[][]
      */
-    private function getMessageAttributes(array $message) : array
+    private function getMessageAttributes(array $message): array
     {
         $messageAttributes = [];
         foreach ($message as $key => $value) {
@@ -131,7 +128,7 @@ class SQS extends SqsClient implements Queue
         return $messageAttributes;
     }
 
-    private function isMessageInTheCorrectFormat(Message $message) : bool
+    private function isMessageInTheCorrectFormat(Message $message): bool
     {
         if (! $message instanceof SQSMessage) {
             throw new InvalidMessageType(SQSMessage::class);
@@ -140,7 +137,7 @@ class SQS extends SqsClient implements Queue
         return true;
     }
 
-    private function getMaxNumberOfMessagesPerConsume() : int
+    private function getMaxNumberOfMessagesPerConsume(): int
     {
         if ($this->queueOptions['maxNumberOfMessagesPerConsume'] > self::MAX_NUMBER_OF_MESSAGES_PER_POLL) {
             return self::MAX_NUMBER_OF_MESSAGES_PER_POLL;

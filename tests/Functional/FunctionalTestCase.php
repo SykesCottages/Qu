@@ -9,17 +9,17 @@ use PHPUnit\Framework\TestCase;
 
 class FunctionalTestCase extends TestCase
 {
-    protected function assertFunctionIsNotCalled() : void
+    protected function assertFunctionIsNotCalled(): void
     {
         $this->assertTrue(false);
     }
 
-    protected function assertFunctionHasBeenCalled() : void
+    protected function assertFunctionHasBeenCalled(): void
     {
         $this->assertTrue(true);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         $container = Mockery::getContainer();
 

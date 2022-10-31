@@ -25,6 +25,8 @@ We've bundled the queues in docker so you should be able to run examples locally
 
 `docker-compose up -d` will start the RabbitMQ and SQS containers and you can run the examples locally. 
 
+`docker-compose run php composer install` will install all the composer dependencies in the docker container.
+
 ## Supported Queues
 
 ### RabbitMQ
