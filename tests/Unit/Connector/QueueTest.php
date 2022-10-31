@@ -18,10 +18,9 @@ class QueueTest extends UnitTestCase
     // @codingStandardsIgnoreStart
     /** @var Mock|Queue */
     private $queueInterface;
-
-    /** @var Queue */
-    private $queue;
     // @codingStandardsIgnoreEnd
+
+    private Queue $queue;
 
     public function setUp(): void
     {
